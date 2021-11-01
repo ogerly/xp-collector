@@ -52,8 +52,14 @@ Make data structures possible for visual viewing.
 - Vue
 - MySQL
 - graphs
+>   https://dash14.github.io/v-network-graph/
 
 additional:
 
 - The ability to import large amounts of data from table structures and turn them into nodes. 
 - The ability to import large amounts of data from table structures and connect them to existing edges. 
+
+
+
+Import / Export data
+Import and Export your query results to CSV, Excel or JSON.
