@@ -4,12 +4,14 @@
 
   ### frontend
     $ cd frontend
+    $ npm install
     $ npm run serve
 
 
   ### backend
-    $ cd node index
-    $ npm run serve
+    $ cd backend
+    $ npm install
+    $ node index
 
 
   ### Database
