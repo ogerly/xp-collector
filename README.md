@@ -2,16 +2,30 @@
 
 # Install
 
+  ### Projekt
+    $ git clone https://github.com/ogerly/xp-collector.git
+    $ cd xp-collector
+
+Bitte führe im frontend und im backend folgende befehle aus. 
+
   ### frontend
     $ cd frontend
     $ npm install
     $ npm run serve
+    
+      App running at:
+      - Local:   http://localhost:8080/ 
+      - Network: http://192.168.0.248:8080/
+ 
 
+Öffne eine zweite Konsole und 
 
   ### backend
     $ cd backend
     $ npm install
     $ node index
+    
+      Server is running on port http://localhost:5000.
 
 
   ### Database
