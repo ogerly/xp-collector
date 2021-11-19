@@ -1,5 +1,21 @@
 # XP-COLLECTOR
 
+# Install
+
+  ### frontend
+    $ cd frontend
+    $ npm run serve
+
+
+  ### backend
+    $ cd node index
+    $ npm run serve
+
+
+  ### Database
+    Im Order **Database** findet ihr ein backup der Beispieldatenbank
+    
+_____________
 
 ### Task:
 
