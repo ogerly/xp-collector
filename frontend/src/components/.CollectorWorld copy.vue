@@ -1,15 +1,48 @@
 <template>
-  <div class="hello w-100" >
-    <b-container fluid class="w-100 bv-example-row border mb-4 mt-4 p-2">
+  <div class="hello">
+    <b-container class="bv-example-row border mb-4 mt-4 p-4">
       <b-row>
-        <b-col cols="7" class="border2">
-          <Labels :nodeText="nodeText" :nodeItems="nodeItems" @save-label="saveLabel" @edit-node="editNode" />
+        <b-col class="border2">
+          <div class="">Hauptknoten</div>
+          <div>
+            <b-input-group
+              class="mb-3"
+              prepend="Knoten"
+            >
+              <b-form-input v-model="nodeText"></b-form-input>
+              <b-input-group-append>
+                <b-button size="sm" text="Button" variant="success" @click="saveLabel">save</b-button>
+                <b-button size="sm" text="Button" variant="danger" @click="deleteNode">delete</b-button>
+                <b-button size="sm" text="Button" variant="warning" @click="updateNode">update</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </div>
+
+          <hr>
+          <!--{{nodeItems}}-->
+          <ul>
+            <li v-for="item in nodeItems" :key="item.id"><div @click="editNode">{{item._fields[0][0]}}</div></li>
+          </ul>
         </b-col>
-        <b-col  cols="5" class="border3">
+        <b-col class="border3">
           <div class="">Kanten / Verbindung</div>
+          <div>
+            <b-input-group
+              class="mb-3"
+              prepend="Kanten"
+            >
+              <b-form-input v-model="edgeText"></b-form-input>
+              <b-input-group-append>
+                <b-button size="sm" text="Button" variant="success" @click="saveEdge">save</b-button>
+                <b-button size="sm" text="Button" variant="danger" @click="deleteEdge">delete</b-button>
+                <b-button size="sm" text="Button" variant="warning" @click="updateEdge">update</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </div>
+
           <hr>
           <ul>
-            <li v-for="item in RelationsItems" :key="item.id"><div :data-id="item.id">{{item}}</div></li>
+            <li v-for="item in edgeItems" :key="item.id"><div @click="editEdge" :data-id="item.id">{{item.name}}</div></li>
           </ul>
         </b-col>
       </b-row>
@@ -18,29 +51,31 @@
 
         <b-col >
           <div show v-show="nodeContentText != ''" >
-            <Nodes
-              :nodeContentText="nodeContentText"
-              :nodeContentAddText="nodeContentAddText"
-              :contentItems="contentItems"
-              @save-node="saveNode" />
+            Unterknoten für
+            <h2>{{nodeContentText}}</h2>
+               <div>
+            <b-input-group
+              class="mb-3"
+              prepend="Content"
+            >
+              <b-form-input v-model="nodeContentAddText"></b-form-input>
+              <b-input-group-append>
+                <b-button size="sm" text="Button" variant="success" @click="saveNode">save</b-button>
+                <b-button size="sm" text="Button" variant="danger" @click="deleteNodeContent">delete</b-button>
+                <b-button size="sm" text="Button" variant="warning" @click="updateNodeContent">update</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </div>
+            <hr>
+             <ul>
+            <li v-for="item in contentItems" :key="item.id"><div @click="editNodeContent">{{item}}</div></li>
+          </ul>
+
           </div>
         </b-col>
 
       </b-row>
     </b-container>
-    <ConnectNodes
-        :selectedLabel1="selectedLabel1"
-        :selectedLabel2="selectedLabel2"
-        :optionsLabels="optionsLabels"
-        :selectedSubNode1="selectedSubNode1"
-        :selectedSubNode2="selectedSubNode2"
-        :optionsSubNode1="optionsSubNode1"
-        :optionsSubNode2="optionsSubNode2"
-        :showNode1="showNode1"
-        :showNode2="showNode2"
-        :selectedEdges="selectedEdges"
-        :showEdge="showEdge"
-    />
     <b-container class="border mt-4 mb-4 p-4">
       Bitte Wähle zwei Hauptknoten aus um die Unterknoten zu Verbinden.
       <b-row>
@@ -74,7 +109,7 @@
       </b-row>
       <b-container class="border4 p-3">
         <b-row>
-          <b-col v-if="selectedLabel1 ">
+          <b-col>
             <h3>{{ selectedLabel1 }}</h3>
               <label>Unterknoten 1 </label>
               <br>
@@ -88,22 +123,21 @@
              >
           </b-form-select>
           </b-col>
-          <b-col v-if="selectedLabel1 && selectedLabel2">
+          <b-col>
             <h3>{{ selectedEdges }}</h3>
             <label>Kante / Verbindung</label>
               <br>
           <b-form-select
             v-model="selectedEdges"
-            :options="relationOptions"
+            :options="optionsEdges"
             class="mb-3"
             value-field="name"
             text-field="name"
             disabled-field="notEnabled"
              >
           </b-form-select>
-          <b-input v-model="selectedEdges" type="text"></b-input>
           </b-col>
-          <b-col v-if="selectedLabel2">
+          <b-col>
             <h3>{{ selectedLabel2 }}</h3>
              <label>Unterknoten 2</label>
              <br>
@@ -141,12 +175,7 @@
       <br>
       <b-row >
         <b-col >
-           <b-button
-           v-if="selectedLabel1 && selectedEdges && selectedLabel2"
-           block
-           variant="primary"
-           @click="saveNodeRelations"
-           >Verbindung speichern</b-button>
+           <b-button block variant="primary" v-if="showNode1 && showEdge && showNode2">Verbindung speichern</b-button>
         </b-col>
       </b-row>
     </b-container>
@@ -157,17 +186,9 @@
 
 <script>
 import axios from 'axios'
-import Labels from '@/components/Labels.vue'
-import Nodes from '@/components/Nodes.vue'
-import ConnectNodes from '@/components/ConnectNodes.vue'
 
 export default {
-  name: 'Overview',
-  components: {
-    Labels,
-    Nodes,
-    ConnectNodes
-  },
+  name: 'HelloWorld',
   data () {
     return {
       nodeItems: [],
@@ -176,8 +197,9 @@ export default {
       contentItems: [],
       nodeContentText: '',
       nodeContentAddText: '',
-      relationItems: [],
-      RelationsItems: [],
+      edgeItems: [],
+      edgeText: '',
+      edgeTarget: {},
       optionsLabels: [],
       selectedLabel1: '',
       selectedLabel2: '',
@@ -187,7 +209,7 @@ export default {
       selectedSubNode2: '',
       optionsSubNode2: [],
       selectedEdges: '',
-      relationOptions: [],
+      optionsEdges: [],
       showNode1: false,
       showEdge: false,
       showNode2: false
@@ -209,9 +231,8 @@ export default {
       }
     },
     // Create New Label Neo4j
-    async saveLabel (NewLabel) {
-      console.log('saveLabel (' + NewLabel + ')')
-      this.nodeText = NewLabel.replace(/ /i, '_')
+    async saveLabel () {
+      this.nodeText = this.nodeText.replace(/ /i, '_')
       if (this.nodeText === '') {
         alert('lehr ABBRUCH')
         return
@@ -247,16 +268,15 @@ export default {
 
     // Edit Nodes Neo4j
     editNode (data) {
-      console.log('EDIT NODE [' + data + '] ')
-      console.log(data)
-      this.nodeText = data
-      this.nodeContentText = data
+      console.log('EDIT NODE [' + data.target.innerText + '] ')
+      console.log(data.target.innerText)
+      this.nodeText = data.target.innerText
+      this.nodeContentText = data.target.innerText
       this.getLabelNodes()
     },
 
     // Get All Nodes from a Label Neo4j
     async getLabelNodes () {
-      this.nodeContentItems = []
       console.log('getLabelNodes start ', this.nodeText)
       try {
         const response2 = await axios.post('http://localhost:5000/all-nodes', {
@@ -271,11 +291,12 @@ export default {
 
     // Get All Relationship Types in  Neo4j
     async getRelationship () {
-      console.log('async getRelationship')
       try {
-        const response = await axios.get('http://localhost:5000/all-relationships')
-        this.relationItems = response.data.records
-        console.log('getRelationship => ', response.data.records)
+        console.log('<<<<< getRelationship >>>>>>')
+        return
+        // const response1 = await axios.get('http://localhost:5000/get-relationship')
+        // this.edgeItems = response1.data
+        // console.log(response1.data)
       } catch (err) {
         console.log(err)
       }
@@ -301,36 +322,191 @@ export default {
       }
 
       await this.getRelationship()
-      // this.relationOptions = this.relationItems
+      this.optionsEdges = this.edgeItems
     },
 
-    async saveNodeRelations () {
-      if (this.selectedLabel1 === '') return alert('selectedLabel1 ist leer')
-      if (this.selectedLabel2 === '') return alert('selectedLabel2 ist leer')
-      if (this.selectedSubNode1 === '') return alert('selectedSubNode1 ist leer')
-      if (this.selectedSubNode2 === '') return alert('selectedSubNode2 ist leer')
-      if (this.selectedEdges === '') return alert('selectedEdges ist leer')
+    async updateNodeContent () {
+      alert('UPDATE NODE CONETENT ')
+    },
+    async editNodeContent () {
+      alert('EDIT NODE CONETENT ')
+    },
 
+    async deleteNodeContent () {
+      alert('DELETE NODE CONETENT ')
+    },
+    async updateEdge (data) {
+      alert('UPDATE NODE')
+    },
+    async saveEdge (data) {
+      alert('UPDATE NODE')
+    },
+    async updateNode (data) {
+      alert('UPDATE NODE')
+    },
+    async deleteNode (data) {
+      alert('UPDATE NODE')
+    },
+    async deleteEdge (data) {
+      alert('UPDATE NODE')
+    }
+
+    /*
+    // Delete Node MySql
+    async deleteNode () {
       try {
-        await axios.post('http://localhost:5000/save-nodes-relations', {
-          label1: this.selectedLabel1,
-          label2: this.selectedLabel2,
-          node1: this.selectedSubNode1,
-          node2: this.selectedSubNode2,
-          relations: this.selectedEdges
+        await axios.post('http://localhost:5000/dropNode', {
+          node_text: this.nodeText
         })
-        // this.getLabelNodes(this.nodeText)
-        // this.nodeText = ''
-        this.selectedLabel1 = ''
-        this.selectedLabel2 = ''
-        this.selectedSubNode1 = ''
-        this.selectedSubNode2 = ''
-        this.selectedEdges = ''
+        this.getLabels()
+        this.nodeText = ''
       } catch (err) {
         console.log(err)
       }
-    }
+    },
 
+    // Update Nodes MySql
+    updateNode (data) {
+      alert('UPDATE NODE')
+    },
+    /*
+    *
+    *   EDGES
+    *
+    * */
+    /*
+    // Get All Edges MySql
+    async getEdges () {
+      try {
+        const response1 = await axios.get('http://localhost:5000/edges')
+        this.edgeItems = response1.data
+        console.log(response1.data)
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // Create New edge MySql
+    async saveEdge () {
+      this.edgeText = this.edgeText.replace(/ /i, '_')
+      if (this.edgeText === '') {
+        alert('lehr ABBRUCH')
+        return
+      }
+      try {
+        await axios.post('http://localhost:5000/edge', {
+          edge_text: this.edgeText
+        })
+        this.edgeText = ''
+        this.getEdges()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // Delete Node MySql
+    async deleteEdge () {
+      try {
+        await axios.post('http://localhost:5000/deleteEdge', {
+          id: this.edgeTarget.id
+        })
+        this.edgeTarget = {}
+        this.edgeText = ''
+        this.getEdges()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // Edit Nodes MySql
+    editEdge (data) {
+      alert('EDIT NODE [' + data.target.innerText + '] ')
+      this.edgeTarget = { id: data.target.getAttribute('data-id'), text: data.target.innerText }
+      console.log(this.edgeTarget)
+      this.edgeText = this.edgeTarget.text
+    },
+    // Update Nodes
+    updateEdge (data) {
+      alert('UPDATE NODE')
+    },
+    */
+    /*
+    *
+    *
+    *  Node Content
+    *
+    */
+    /*
+    // Get All Node Content MySql
+    async getNodeContents () {
+      console.log('getNodeContents start ', this.nodeText)
+      try {
+        const response2 = await axios.post('http://localhost:5000/nodeContents', {
+          node: this.nodeText
+        })
+        console.log(response2.data)
+        this.nodeContentItems = response2.data
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // Create New edge MySql
+    async saveNodeContent () {
+      this.edgeText = this.nodeContentAddText.replace(/ /i, '_')
+      if (this.nodeContentAddText === '') {
+        alert(this.nodeContentAddText)
+        return
+      }
+      try {
+        await axios.post('http://localhost:5000/createNodeContent', {
+          node: this.nodeText,
+          node_text: this.nodeContentAddText
+        })
+        this.nodeContentAddText = ''
+        this.getNodeContents()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    async updateNodeContent () {
+      alert('UPDATE NODE CONETENT ')
+    },
+    async editNodeContent () {
+      alert('EDIT NODE CONETENT ')
+    },
+
+    async deleteNodeContent () {
+      alert('DELETE NODE CONETENT ')
+    },
+    */
+    /*
+    *
+    *
+    *  Node Connection MySql
+    *
+    */
+    /*
+    async nodeConnection (node) {
+      // this.selectedSubNode1: '',
+      // this.optionsSubNode1: [],
+      console.log('nodeConnection start', node)
+      if (node === 'node1') {
+        console.log('nodeConnection Node 1', this.selectedNode1)
+        this.nodeText = this.selectedNode1
+        await this.getNodeContents()
+        this.optionsSubNode1 = this.nodeContentItems
+        this.showNode1 = true
+      }
+      if (node === 'node2') {
+        console.log('nodeConnection Node 2', this.selectedNode1)
+        this.nodeText = this.selectedNode2
+        await this.getNodeContents()
+        this.optionsSubNode2 = this.nodeContentItems
+        this.showNode2 = true
+      }
+
+      await this.getEdges()
+      this.optionsEdges = this.edgeItems
+    }
+    */
   },
   watch: {
     selectedEdges: function () {
@@ -359,20 +535,10 @@ export default {
       })
       console.log('contentItems', this.contentItems)
       return this.contentItems
-    },
-    relationItems: function () {
-      this.RelationsItems = []
-      this.relationOptions = []
-      console.log('relationItems', this.relationItems)
-      this.relationItems.forEach((value, index) => {
-        this.RelationsItems.push(value._fields[0])
-        console.log(value._fields[0].type)
-        console.log(index)
-      })
-      console.log('RelationsItems', this.RelationsItems)
-      this.relationOptions = this.RelationsItems
-      return this.RelationsItems
     }
+  },
+  computed: {
+
   }
 }
 </script>
