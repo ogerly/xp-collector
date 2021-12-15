@@ -26,13 +26,21 @@ Bitte führe im frontend und im backend folgende befehle aus.
     $ node index
     
       Server git-xp-collector is running on port http://localhost:5000.
+      
+      
+   ### Neo4j Desktop Local
+   - Install Local the Neo4j Desktop
+   - Use Neo4j Browser
+   Tutorial: https://www.youtube.com/watch?v=pvjsxc_MdIw
+
 
    ### database  
-
+   Connect your Neo4j Database with Project backend    
     backend/config/neo4j.js
     Line: 5 
  
    ### Database NeoVis
+   Connect your Neo4j Database with Project frontend NeoVis.js
     frontend/src/assets/config.js
     Line: 3, 4, 5 
 _____________
