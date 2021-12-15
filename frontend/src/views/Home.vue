@@ -133,7 +133,7 @@ export default {
       // return this.optionsLabels
     },
     nodeContentItems: function () {
-      //  this.contentItems = []
+      this.contentItems = []
       // console.log('nodeContentItems', this.nodeContentItems)
       this.nodeContentItems.forEach((value, index) => {
         this.contentItems.push(value._fields[0])
