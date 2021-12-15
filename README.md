@@ -27,10 +27,14 @@ Bitte führe im frontend und im backend folgende befehle aus.
     
       Server git-xp-collector is running on port http://localhost:5000.
 
+   ### database  
 
-  ### Database
-    Im Order **Database** findet ihr ein backup der Beispieldatenbank
-    
+    backend/config/neo4j.js
+    Line: 5 
+ 
+   ### Database NeoVis
+    frontend/src/assets/config.js
+    Line: 3, 4, 5 
 _____________
 
 ### Task:
@@ -82,16 +86,10 @@ Make data structures possible for visual viewing.
 ### Frontend / Backend 
 
 - Vue
-- MySQL
-- graphs
->   https://dash14.github.io/v-network-graph/
-
-additional:
-
-- The ability to import large amounts of data from table structures and turn them into nodes. 
-- The ability to import large amounts of data from table structures and connect them to existing edges. 
+- Neo4j
+- NeoVis.js   https://github.com/neo4j-contrib/neovis.js
 
 
 
-Import / Export data
-Import and Export your query results to CSV, Excel or JSON.
+![FireShot Capture 837 - frontend2 - localhost](https://user-images.githubusercontent.com/1324583/146207393-11ec0202-126c-4b2c-b21c-70ad1d8e9077.png)
+
