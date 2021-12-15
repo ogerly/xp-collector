@@ -4,30 +4,30 @@
       Bitte Wähle zwei Hauptknoten aus um die Unterknoten zu Verbinden.
       <b-row>
         <b-col>
-          <label>Hauptknoten 1</label>
+          <label>Label 1</label>
           <br>
           <b-form-select
             v-model="selectedLabel1"
             :options="optionsLabels"
             class="mb-3"
-            value-field="Tables_in_demo_db"
-            text-field="Tables_in_demo_db"
+            value-field="name"
+            text-field="name"
             disabled-field="notEnabled"
-            @change="nodeConnection('node1')">
+            @change="nodeConnection1()">
           </b-form-select>
 
         </b-col>
         <b-col>
-          <label>Hauptknoten 2</label>
+          <label>Label 2</label>
           <br>
           <b-form-select
             v-model="selectedLabel2"
             :options="optionsLabels"
             class="mb-3"
-            value-field="Tables_in_demo_db"
-            text-field="Tables_in_demo_db"
+            value-field="name"
+            text-field="name"
             disabled-field="notEnabled"
-            @change="nodeConnection('node2')">
+            @change="nodeConnection2()">
           </b-form-select>
         </b-col>
       </b-row>
@@ -35,8 +35,8 @@
         <b-row>
           <b-col v-if="selectedLabel1 ">
             <h3>{{ selectedLabel1 }}</h3>
-              <label>Unterknoten 1 </label>
-              <br>
+            <label>Knoten 1 </label>
+            <br>
           <b-form-select
             v-model="selectedSubNode1"
             :options="optionsSubNode1"
@@ -50,31 +50,31 @@
           <b-col v-if="selectedLabel1 && selectedLabel2">
             <h3>{{ selectedEdges }}</h3>
             <label>Kante / Verbindung</label>
-              <br>
-          <b-form-select
-            v-model="selectedEdges"
-            :options="relationOptions"
-            class="mb-3"
-            value-field="name"
-            text-field="name"
-            disabled-field="notEnabled"
-             >
-          </b-form-select>
+            <br>
+            <b-form-select
+              v-model="selectedEdges"
+              :options="relationOptions"
+              class="mb-3"
+              value-field="name"
+              text-field="name"
+              disabled-field="notEnabled"
+              >
+            </b-form-select>
           <b-input v-model="selectedEdges" type="text"></b-input>
           </b-col>
           <b-col v-if="selectedLabel2">
             <h3>{{ selectedLabel2 }}</h3>
-             <label>Unterknoten 2</label>
-             <br>
-          <b-form-select
-            v-model="selectedSubNode2"
-            :options="optionsSubNode2"
-            class="mb-3"
-            value-field="node_text"
-            text-field="node_text"
-            disabled-field="notEnabled"
-             >
-          </b-form-select>
+             <label>Knoten 2</label>
+            <br>
+            <b-form-select
+              v-model="selectedSubNode2"
+              :options="optionsSubNode2"
+              class="mb-3"
+              value-field="node_text"
+              text-field="node_text"
+              disabled-field="notEnabled"
+              >
+            </b-form-select>
           </b-col>
         </b-row>
       </b-container>
@@ -113,41 +113,136 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
   name: 'connect-nodes',
   props: {
-    selectedLabel1: {
-      type: String
-    },
-    selectedLabel2: {
-      type: String
-    },
     optionsLabels: {
       type: Array
     },
-    selectedSubNode1: {
-      type: String
-    },
-    selectedSubNode2: {
-      type: String
-    },
-    optionsSubNode1: {
+    contentItems: {
       type: Array
     },
-    optionsSubNode2: {
+    RelationsItems: {
       type: Array
+    }
+  },
+  data () {
+    return {
+      nodeText: '',
+      selectedLabel1: '',
+      selectedLabel2: '',
+      selectedSubNode1: '',
+      selectedSubNode2: '',
+      optionsSubNode1: [],
+      optionsSubNode2: [],
+      showNode1: false,
+      showNode2: false,
+      selectedEdges: '',
+      showEdge: false,
+      relationOptions: []
+    }
+  },
+  methods: {
+    async nodeConnection1 () {
+      console.log('nodeConnection1')
+      console.log('this.selectedLabel1 => ', this.selectedLabel1)
+      try {
+        const response2 = await axios.post('http://localhost:5000/all-nodes', {
+          node: this.selectedLabel1
+        })
+        // console.log('getLabelNodes response2', response2.data.records)
+        this.optionsSubNode1 = []
+
+        response2.data.records.forEach((value, index) => {
+          this.optionsSubNode1.push(value._fields[0])
+          console.log(value._fields[0])
+          console.log(index)
+        })
+
+        // this.optionsSubNode1 = this.contentItems
+        console.log('>>>>> this.optionsSubNode1 =>', this.optionsSubNode1)
+        this.showNode1 = true
+      } catch (err) {
+        console.log(err)
+      }
+
+      // await this.getRelationship()
+      if (this.showNode1 && this.showNode2) {
+        await this.$emit('get-relationship')
+        this.relationOptions = this.RelationsItems
+      }
     },
-    showNode1: {
-      type: Boolean
+
+    async nodeConnection2 () {
+      console.log('nodeConnection2 start')
+      console.log('this.selectedLabel2 => ', this.selectedLabel2)
+
+      console.log('nodeConnection Label 2', this.selectedLabel2)
+      // this.nodeText = this.selectedLabel2
+      // await this.getLabelNodes()
+      try {
+        const response2 = await axios.post('http://localhost:5000/all-nodes', {
+          node: this.selectedLabel2
+        })
+        // console.log('getLabelNodes response2', response2.data.records)
+        this.optionsSubNode2 = []
+
+        response2.data.records.forEach((value, index) => {
+          this.optionsSubNode2.push(value._fields[0])
+          console.log(value._fields[0])
+          console.log(index)
+        })
+
+        // this.optionsSubNode1 = this.contentItems
+        console.log('>>>>> this.optionsSubNode2 =>', this.optionsSubNode2)
+        this.showNode2 = true
+      } catch (err) {
+        console.log(err)
+      }
+
+      // await this.getRelationship()
+      if (this.showNode1 === true && this.showNode2 === true) {
+        await this.$emit('get-relationship')
+        this.relationOptions = this.RelationsItems
+      }
     },
-    showNode2: {
-      type: Boolean
-    },
-    selectedEdges: {
-      type: String
-    },
-    showEdge: {
-      type: Boolean
+
+    async saveNodeRelations () {
+      if (this.selectedLabel1 === '') return alert('selectedLabel1 ist leer')
+      if (this.selectedLabel2 === '') return alert('selectedLabel2 ist leer')
+      if (this.selectedSubNode1 === '') return alert('selectedSubNode1 ist leer')
+      if (this.selectedSubNode2 === '') return alert('selectedSubNode2 ist leer')
+      if (this.selectedEdges === '') return alert('selectedEdges ist leer')
+
+      try {
+        await axios.post('http://localhost:5000/save-nodes-relations', {
+          label1: this.selectedLabel1,
+          label2: this.selectedLabel2,
+          node1: this.selectedSubNode1,
+          node2: this.selectedSubNode2,
+          relations: this.selectedEdges
+        })
+        // this.getLabelNodes(this.nodeText)
+        // this.nodeText = ''
+        this.selectedLabel1 = ''
+        this.selectedLabel2 = ''
+        this.selectedSubNode1 = ''
+        this.selectedSubNode2 = ''
+        this.selectedEdges = ''
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  },
+  watch: {
+    selectedEdges: function () {
+      if (this.selectedEdges === '') {
+        this.showEdge = false
+      } else {
+        this.showEdge = true
+      }
     }
   }
 }

@@ -15,11 +15,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(Router);
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to backend application." });
+  res.json({ message: "Welcome to the git-xp-collector backend application." });
 });
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`Server git-xp-collector is running on port ${PORT}.`);
 });

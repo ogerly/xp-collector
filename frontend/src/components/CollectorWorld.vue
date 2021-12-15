@@ -3,7 +3,11 @@
     <b-container fluid class="w-100 bv-example-row border mb-4 mt-4 p-2">
       <b-row>
         <b-col cols="7" class="border2">
-          <Labels :nodeText="nodeText" :nodeItems="nodeItems" @save-label="saveLabel" @edit-node="editNode" />
+          Labels
+          <hr>
+          <ul>
+            <li v-for="item in nodeItems" :key="item.id"  @click="$emit('get-label-nodes',item._fields[0][0])"><div>{{item._fields[0][0]}}</div></li>
+          </ul>
         </b-col>
         <b-col  cols="5" class="border3">
           <div class="">Kanten / Verbindung</div>
@@ -13,434 +17,37 @@
           </ul>
         </b-col>
       </b-row>
-      <hr>
-      <b-row class="border2">
-
-        <b-col >
-          <div show v-show="nodeContentText != ''" >
-            <Nodes
-              :nodeContentText="nodeContentText"
-              :nodeContentAddText="nodeContentAddText"
-              :contentItems="contentItems"
-              @save-node="saveNode" />
-          </div>
-        </b-col>
-
-      </b-row>
-    </b-container>
-    <ConnectNodes
-        :selectedLabel1="selectedLabel1"
-        :selectedLabel2="selectedLabel2"
-        :optionsLabels="optionsLabels"
-        :selectedSubNode1="selectedSubNode1"
-        :selectedSubNode2="selectedSubNode2"
-        :optionsSubNode1="optionsSubNode1"
-        :optionsSubNode2="optionsSubNode2"
-        :showNode1="showNode1"
-        :showNode2="showNode2"
-        :selectedEdges="selectedEdges"
-        :showEdge="showEdge"
-    />
-    <b-container class="border mt-4 mb-4 p-4">
-      Bitte Wähle zwei Hauptknoten aus um die Unterknoten zu Verbinden.
-      <b-row>
+      <br>
+      <b-row class="mt-4">
         <b-col>
-          <label>Hauptknoten 1</label>
-          <br>
-          <b-form-select
-            v-model="selectedLabel1"
-            :options="optionsLabels"
-            class="mb-3"
-            value-field="Tables_in_demo_db"
-            text-field="Tables_in_demo_db"
-            disabled-field="notEnabled"
-            @change="nodeConnection('node1')">
-          </b-form-select>
-
-        </b-col>
-        <b-col>
-          <label>Hauptknoten 2</label>
-          <br>
-          <b-form-select
-            v-model="selectedLabel2"
-            :options="optionsLabels"
-            class="mb-3"
-            value-field="Tables_in_demo_db"
-            text-field="Tables_in_demo_db"
-            disabled-field="notEnabled"
-            @change="nodeConnection('node2')">
-          </b-form-select>
+          Knoten
+          <hr>
+           <ul>
+            <li v-for="item in contentItems" :key="item.id"><div >{{item}}</div></li>
+          </ul>
         </b-col>
       </b-row>
-      <b-container class="border4 p-3">
-        <b-row>
-          <b-col v-if="selectedLabel1 ">
-            <h3>{{ selectedLabel1 }}</h3>
-              <label>Unterknoten 1 </label>
-              <br>
-          <b-form-select
-            v-model="selectedSubNode1"
-            :options="optionsSubNode1"
-            class="mb-3"
-            value-field="node_text"
-            text-field="node_text"
-            disabled-field="notEnabled"
-             >
-          </b-form-select>
-          </b-col>
-          <b-col v-if="selectedLabel1 && selectedLabel2">
-            <h3>{{ selectedEdges }}</h3>
-            <label>Kante / Verbindung</label>
-              <br>
-          <b-form-select
-            v-model="selectedEdges"
-            :options="relationOptions"
-            class="mb-3"
-            value-field="name"
-            text-field="name"
-            disabled-field="notEnabled"
-             >
-          </b-form-select>
-          <b-input v-model="selectedEdges" type="text"></b-input>
-          </b-col>
-          <b-col v-if="selectedLabel2">
-            <h3>{{ selectedLabel2 }}</h3>
-             <label>Unterknoten 2</label>
-             <br>
-          <b-form-select
-            v-model="selectedSubNode2"
-            :options="optionsSubNode2"
-            class="mb-3"
-            value-field="node_text"
-            text-field="node_text"
-            disabled-field="notEnabled"
-             >
-          </b-form-select>
-          </b-col>
-        </b-row>
-      </b-container>
-    <b-container>
-      <b-row>
-        <b-col style="text-align:right">
-          <span class="circ1" v-if="showNode1">
-            <span class="text-middle">{{selectedSubNode1}}</span>
-          </span></b-col>
-        <b-col style="text-align:center">
-
-          <span class="text-edge">{{selectedEdges}}</span>
-          <hr v-if="showEdge" class="new5">
-          </b-col>
-        <b-col style="text-align:left">
-          <span class="circ1" v-if="showNode2">
-            <span class="text-middle">{{selectedSubNode2}}</span>
-          </span>
-        </b-col>
-      </b-row>
-      <br>
-      <br>
-      <br>
-      <b-row >
-        <b-col >
-           <b-button
-           v-if="selectedLabel1 && selectedEdges && selectedLabel2"
-           block
-           variant="primary"
-           @click="saveNodeRelations"
-           >Verbindung speichern</b-button>
-        </b-col>
-      </b-row>
-    </b-container>
     </b-container>
 
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import Labels from '@/components/Labels.vue'
-import Nodes from '@/components/Nodes.vue'
-import ConnectNodes from '@/components/ConnectNodes.vue'
 
 export default {
   name: 'Overview',
   components: {
-    Labels,
-    Nodes,
-    ConnectNodes
   },
-  data () {
-    return {
-      nodeItems: [],
-      nodeText: '',
-      nodeContentItems: [],
-      contentItems: [],
-      nodeContentText: '',
-      nodeContentAddText: '',
-      relationItems: [],
-      RelationsItems: [],
-      optionsLabels: [],
-      selectedLabel1: '',
-      selectedLabel2: '',
-      optionsNode1: [],
-      selectedSubNode1: '',
-      optionsSubNode1: [],
-      selectedSubNode2: '',
-      optionsSubNode2: [],
-      selectedEdges: '',
-      relationOptions: [],
-      showNode1: false,
-      showEdge: false,
-      showNode2: false
-    }
-  },
-  created () {
-    this.getLabels()
-    this.getRelationship()
-  },
-  methods: {
-    // Get All labels Neo4j
-    async getLabels () {
-      try {
-        const response = await axios.get('http://localhost:5000/all-labels')
-        this.nodeItems = response.data.records
-        this.optionsNode1 = response.data.records
-      } catch (err) {
-        console.log(err)
-      }
+  props: {
+    nodeItems: {
+      type: Array
     },
-    // Create New Label Neo4j
-    async saveLabel (NewLabel) {
-      console.log('saveLabel (' + NewLabel + ')')
-      this.nodeText = NewLabel.replace(/ /i, '_')
-      if (this.nodeText === '') {
-        alert('lehr ABBRUCH')
-        return
-      }
-      try {
-        await axios.post('http://localhost:5000/new-label', {
-          node_text: this.nodeText
-        })
-        this.nodeText = ''
-        this.getLabels()
-      } catch (err) {
-        console.log(err)
-      }
+    RelationsItems: {
+      type: Array
     },
-    // Create New Label with Node Neo4j
-    async saveNode () {
-      this.nodeText = this.nodeText.replace(/ /i, '_')
-      if (this.nodeText === '') {
-        alert('lehr ABBRUCH')
-        return
-      }
-      try {
-        await axios.post('http://localhost:5000/new-node', {
-          node: this.nodeText,
-          node_text: this.nodeContentAddText
-        })
-        this.getLabelNodes(this.nodeText)
-        this.nodeText = ''
-      } catch (err) {
-        console.log(err)
-      }
-    },
-
-    // Edit Nodes Neo4j
-    editNode (data) {
-      console.log('EDIT NODE [' + data + '] ')
-      console.log(data)
-      this.nodeText = data
-      this.nodeContentText = data
-      this.getLabelNodes()
-    },
-
-    // Get All Nodes from a Label Neo4j
-    async getLabelNodes () {
-      this.nodeContentItems = []
-      console.log('getLabelNodes start ', this.nodeText)
-      try {
-        const response2 = await axios.post('http://localhost:5000/all-nodes', {
-          node: this.nodeText
-        })
-        console.log('getLabelNodes response2', response2.data.records)
-        this.nodeContentItems = response2.data.records
-      } catch (err) {
-        console.log(err)
-      }
-    },
-
-    // Get All Relationship Types in  Neo4j
-    async getRelationship () {
-      console.log('async getRelationship')
-      try {
-        const response = await axios.get('http://localhost:5000/all-relationships')
-        this.relationItems = response.data.records
-        console.log('getRelationship => ', response.data.records)
-      } catch (err) {
-        console.log(err)
-      }
-    },
-
-    async nodeConnection (node) {
-      // this.selectedSubNode1: '',
-      // this.optionsSubNode1: [],
-      console.log('nodeConnection start => ', node)
-      if (node === 'node1') {
-        console.log('nodeConnection Label 1', this.selectedLabel1)
-        this.nodeText = this.selectedLabel1
-        await this.getLabelNodes()
-        this.optionsSubNode1 = this.contentItems
-        this.showNode1 = true
-      }
-      if (node === 'node2') {
-        console.log('nodeConnection Label 2', this.selectedLabel2)
-        this.nodeText = this.selectedLabel2
-        await this.getLabelNodes()
-        this.optionsSubNode2 = this.contentItems
-        this.showNode2 = true
-      }
-
-      await this.getRelationship()
-      // this.relationOptions = this.relationItems
-    },
-
-    async saveNodeRelations () {
-      if (this.selectedLabel1 === '') return alert('selectedLabel1 ist leer')
-      if (this.selectedLabel2 === '') return alert('selectedLabel2 ist leer')
-      if (this.selectedSubNode1 === '') return alert('selectedSubNode1 ist leer')
-      if (this.selectedSubNode2 === '') return alert('selectedSubNode2 ist leer')
-      if (this.selectedEdges === '') return alert('selectedEdges ist leer')
-
-      try {
-        await axios.post('http://localhost:5000/save-nodes-relations', {
-          label1: this.selectedLabel1,
-          label2: this.selectedLabel2,
-          node1: this.selectedSubNode1,
-          node2: this.selectedSubNode2,
-          relations: this.selectedEdges
-        })
-        // this.getLabelNodes(this.nodeText)
-        // this.nodeText = ''
-        this.selectedLabel1 = ''
-        this.selectedLabel2 = ''
-        this.selectedSubNode1 = ''
-        this.selectedSubNode2 = ''
-        this.selectedEdges = ''
-      } catch (err) {
-        console.log(err)
-      }
-    }
-
-  },
-  watch: {
-    selectedEdges: function () {
-      if (this.selectedEdges === '') {
-        this.showEdge = false
-      } else {
-        this.showEdge = true
-      }
-    },
-    optionsNode1: function () {
-      // console.log('optionsNode1', this.optionsNode1)
-      this.optionsNode1.forEach((value, index) => {
-        this.optionsLabels.push(value._fields[0][0])
-        // console.log(value._fields[0][0])
-        // console.log(index)
-      })
-      console.log('selectedLabels', this.selectedLabels)
-    },
-    nodeContentItems: function () {
-      this.contentItems = []
-      console.log('nodeContentItems', this.nodeContentItems)
-      this.nodeContentItems.forEach((value, index) => {
-        this.contentItems.push(value._fields[0])
-        console.log(value._fields[0])
-        console.log(index)
-      })
-      console.log('contentItems', this.contentItems)
-      return this.contentItems
-    },
-    relationItems: function () {
-      this.RelationsItems = []
-      this.relationOptions = []
-      console.log('relationItems', this.relationItems)
-      this.relationItems.forEach((value, index) => {
-        this.RelationsItems.push(value._fields[0])
-        console.log(value._fields[0].type)
-        console.log(index)
-      })
-      console.log('RelationsItems', this.RelationsItems)
-      this.relationOptions = this.RelationsItems
-      return this.RelationsItems
+    contentItems: {
+      type: Array
     }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.border {
-  border: 1px;
-border: 2px dotted;
-border: medium dashed rgb(125, 181, 233);
-background-color: #5467611a;
-}
-.border2 {
-background-color: #cdcf563b;
-}
-.border3 {
-background-color: #5bc9a636;
-}
-.border4 {
-background-color: #c98c5b36;
-}
-
-/*Start Button Line*/
-.circ1 {
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
-  background-color: #42b983;
-  display: inline-grid;
-  text-align: center;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.text-middle {
-  width: 120px;
-  padding-top: 48px;
-  padding-left: 22px;
-  display: block;
-  font-size: large;
-}
-
-.text-edge {
-  padding-top: 7px;
-  display: block;
-  font-size: xx-large;
-
-}
-
-hr.new5 {
-  border: 10px solid green;
-  border-radius: 5px;
-  margin-left: -27px;
-  margin-right: -27px;
-}
-/* ENDE Button Line*/
-</style>

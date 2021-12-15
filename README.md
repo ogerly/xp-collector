@@ -25,7 +25,7 @@ Bitte führe im frontend und im backend folgende befehle aus.
     $ npm install
     $ node index
     
-      Server is running on port http://localhost:5000.
+      Server git-xp-collector is running on port http://localhost:5000.
 
 
   ### Database
