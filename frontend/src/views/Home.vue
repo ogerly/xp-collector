@@ -1,39 +1,43 @@
 <template>
   <div class="home">
+    home
+    <b-tabs content-class="mt-3" align="center">
+      <b-tab title="Übersicht" active>
+        <CollectorWorld
+              :nodeItems="nodeItems"
+              :RelationsItems="RelationsItems"
+              :contentItems="contentItems"
+              :nodeContentText="nodeContentText"
+              @get-label-nodes="getLabelNodes"
+              @get-relationship="getRelationship"
+              @set-props-query="setPropsQuery"
+        />
+      </b-tab>
+      <b-tab title="+ Knoten">
+        <Labels
+              :nodeItems="nodeItems"
+              @get-labels="getLabels"
+              @get-label-nodes="getLabelNodes" />
+        <Nodes
+          :nodeContentText="nodeContentText"
+          :contentItems="contentItems"
+          @set-props-query="setPropsQuery"
+          @get-label-nodes="getLabelNodes"
+        />
+      </b-tab>
+      <b-tab title="+ Verbindungen">
+        <ConnectNodes
+          :optionsLabels="optionsLabels"
+          :contentItems="contentItems"
+          :RelationsItems="RelationsItems"
+          @get-label-nodes="getLabelNodes"
+          @get-relationship="getRelationship"
 
-      <b-tabs content-class="mt-3" align="center">
-    <b-tab title="Übersicht" active>
-      <CollectorWorld
-            :nodeItems="nodeItems"
-            :RelationsItems="RelationsItems"
-            :contentItems="contentItems"
-             @get-label-nodes="getLabelNodes"
       />
-    </b-tab>
-    <b-tab title="+ Knoten">
-      <Labels
-            :nodeItems="nodeItems"
-            @get-labels="getLabels"
-            @get-label-nodes="getLabelNodes" />
-      <Nodes
-        :nodeContentText="nodeContentText"
-        :nodeContentAddText="nodeContentAddText"
-        :contentItems="contentItems"
-      />
-    </b-tab>
-    <b-tab title="+ Verbindungen">
-      <ConnectNodes
-        :optionsLabels="optionsLabels"
-        :contentItems="contentItems"
-        :RelationsItems="RelationsItems"
-        @get-label-nodes="getLabelNodes"
-        @get-relationship="getRelationship"
-
-    />
-    </b-tab>
-    <b-tab title="About" ><p>I'm a disabled tab!</p></b-tab>
-  </b-tabs>
-    <NeoVis />
+      </b-tab>
+      <b-tab title="About" ><p>I'm a disabled tab!</p></b-tab>
+    </b-tabs>
+    <NeoVis :propsQuery="propsQuery"/>
   </div>
 </template>
 
@@ -63,21 +67,21 @@ export default {
       nodeContentItems: [],
       contentItems: [],
       nodeContentText: '',
-      nodeContentAddText: '',
       relationItems: [],
       RelationsItems: [],
       optionsLabels: [],
       optionsNode1: [],
-      relationOptions: []
+      relationOptions: [],
+      propsQuery: ''
     }
   },
   created () {
     this.getLabels()
-    this.getRelationship()
   },
   methods: {
     // Get All labels Neo4j
     async getLabels (label) {
+      console.log('home methods getLabels label=>  ', label)
       try {
         const response = await axios.get('http://localhost:5000/all-labels')
         this.nodeItems = response.data.records
@@ -90,9 +94,9 @@ export default {
 
     // Get All Nodes from a Label Neo4j
     async getLabelNodes (label) {
+      console.log('home methods getLabelNodes label=>  ', label)
       this.nodeContentText = label
       this.nodeText = label
-      // console.log('getLabelNodes start ', this.nodeText)
       if (label === '') {
         return
       }
@@ -109,35 +113,45 @@ export default {
 
     // Get All Relationship Types in  Neo4j
     async getRelationship () {
-      console.log('async getRelationship')
+      console.log('home methods getRelationship')
       // this.relationItems = []
       try {
         const response = await axios.get('http://localhost:5000/all-relationships')
+
+        // console.log('getRelationship response => ', response)
+        // console.log('getRelationship response.data => ', response.data)
+        // console.log('getRelationship response.data.records => ', response.data.records)
         this.relationItems = response.data.records
-        // console.log('GET2 getRelationship => ', response.data.records)
       } catch (err) {
         console.log(err)
       }
+    },
+
+    setPropsQuery (label, node) {
+      console.log('home methods setPropsQuery (label) => ', label)
+      console.log('setPropsQuery (node) => ', node)
+      this.propsQuery = { label, node }
+      console.log('this.propsQuery => []', this.propsQuery)
     }
 
   },
   watch: {
 
     optionsNode1: function () {
-      // console.log('optionsNode1', this.optionsNode1)
+      console.log('home watch optionsNode1', this.optionsNode1)
       this.optionsNode1.forEach((value, index) => {
         this.optionsLabels.push(value._fields[0][0])
-        console.log(value._fields[0][0])
-        console.log(index)
+        // console.log(value._fields[0][0])
+        // console.log(index)
       })
       // return this.optionsLabels
     },
     nodeContentItems: function () {
       this.contentItems = []
-      // console.log('nodeContentItems', this.nodeContentItems)
+      console.log('home watch nodeContentItems', this.nodeContentItems)
       this.nodeContentItems.forEach((value, index) => {
-        this.contentItems.push(value._fields[0])
-        console.log(value._fields[0])
+        this.contentItems.push(value._fields[0].properties)
+        console.log(value._fields[0].properties)
         console.log(index)
       })
       console.log('++++ contentItems', this.contentItems)
@@ -146,15 +160,17 @@ export default {
     relationItems: function () {
       this.RelationsItems = []
       // this.relationOptions = []
-      console.log('relationItems', this.relationItems)
-      this.relationItems.forEach((value, index) => {
-        this.RelationsItems.push(value._fields[0])
-        console.log(value._fields[0])
-        console.log(index)
-      })
-      // console.log('RelationsItems', this.RelationsItems)
-      this.relationOptions = this.RelationsItems
+      console.log('home watch relationItems', this.relationItems)
+      if (this.relationItems) {
+        this.relationItems.forEach((value, index) => {
+          this.RelationsItems.push(value._fields[0])
+        // console.log(value._fields[0])
+        // console.log(index)
+        })
+        // console.log('RelationsItems', this.RelationsItems)
+        this.relationOptions = this.RelationsItems
       // return this.RelationsItems
+      }
     }
   }
 }

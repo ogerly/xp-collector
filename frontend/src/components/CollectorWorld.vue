@@ -1,5 +1,6 @@
 <template>
   <div class="hello w-100" >
+    collectorworld
     <b-container fluid class="w-100 bv-example-row border mb-4 mt-4 p-2">
       <b-row>
         <b-col cols="7" class="border2">
@@ -20,10 +21,10 @@
       <br>
       <b-row class="mt-4">
         <b-col>
-          Knoten
+          Knoten für Label : {{nodeContentText}}
           <hr>
            <ul>
-            <li v-for="item in contentItems" :key="item.id"><div >{{item}}</div></li>
+            <li v-for="item in contentItems" :key="item.id" @click="$emit('set-props-query', nodeContentText, item.name)"><div >{{item.name}}</div></li>
           </ul>
         </b-col>
       </b-row>
@@ -47,7 +48,13 @@ export default {
     },
     contentItems: {
       type: Array
+    },
+    nodeContentText: {
+      type: String
     }
+  },
+  created () {
+    this.$emit('get-relationship')
   }
 }
 </script>

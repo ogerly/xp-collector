@@ -2,7 +2,9 @@
 import { 
     modelAllLabels, 
     modelSaveNewLabel, 
-    modelSaveNewNode, 
+    modelSaveNewNode,
+    modelShowDataFromOneNode,
+    modelDeleteNode,
     modelAllNodes, 
     modelSaveNodesRelations, 
     modelAllRelationships,
@@ -45,6 +47,29 @@ export const controllerSaveNewNode = (req, res) => {
         }
     });
 }
+ // show all Datas from one Node in Database
+ export const controllerShowDataFromOneNode = (req, res) => {
+    const data = req.body;
+    modelShowDataFromOneNode(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+ // Delete a  Node in Database
+ export const controllerDeleteNode = (req, res) => {
+    const data = req.body;
+    modelDeleteNode(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
   // Show all Nodes from a Label
 export const controllerAllNodes = (req, res) => {
     const data = req.body;

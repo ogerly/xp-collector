@@ -4,24 +4,29 @@ export const graphConfig = {
   server_user: process.env.NEO4J_USER || 'neo4j',
   server_password: process.env.NEO4J_PASSWORD || 'test',
   labels: {
-    Character: {
+    Person: {
+      caption: 'name',
+      community: false
+      // sizeCypher: 'MATCH (n) WHERE id(n) = $id MATCH (n)-[r]-() RETURN count(r) AS c'
+    },
+    Bild: {
       caption: 'name'
     },
-    Location: {
+    Museum: {
       caption: 'name'
     },
-    Nation: {
+    Ort: {
       caption: 'name'
     }
   },
   relationships: {
-    GO_TO: {
+    zeichnete: {
       thickness: 'weight',
-      caption: false
+      caption: true
     },
-    BORN_IN: {
+    geboren: {
       thickness: 'weight',
-      caption: false
+      caption: true
     },
     BELONGS: {
       thickness: 'weight',

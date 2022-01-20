@@ -31,13 +31,13 @@ export const modelSaveNewLabel = (data, result) => {
  
  // save a new Label with Node in Neo4jDatabase
 export const modelSaveNewNode = (data, result) => {
-    //console.log('modelSaveNewNode => ', data)
+    console.log('modelSaveNewNode => ', data)
 
-    db.run("MATCH (n:" + data.node + ") where NOT (EXISTS (n.name)) detach delete n")
+    db.run("MATCH (n:" + data.label + ") where NOT (EXISTS (n.name)) detach delete n")
     .then(data1 => { 
-        db.run("CREATE (n:" + data.node + " {name: '" + data.node_text + "', info: 'Info zu " + data.node_text + "'})")
+        db.run("CREATE (n:" + data.label + " {name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
         .then( data => {        
-            result(null, data.node);       
+            result(null, data.label);       
         })
         .catch(err => {
             console.log(err);
@@ -50,7 +50,39 @@ export const modelSaveNewNode = (data, result) => {
    
 } 
 
+// show all Datas from one Node in Database 
+export const modelShowDataFromOneNode = (data, result) => {
+    // console.log('modelShowDataFromOneNode') 
+    // console.log('data => ', data) 
+    // console.log('result => ', result) 
+    // console.log(">>>>>>> MATCH (n:" + data.label + "{name: " + data.name + "}) RETURN n.name LIMIT 25")
 
+   db.run("MATCH (n:" + data.label + "{name: '" + data.name + "'}) RETURN n LIMIT 25")
+   .then( data => {        
+       result(null, data);       
+   })
+   .catch(err => {
+       console.log(err);
+       result(err, null);
+   })
+}
+
+// sdelete a Node in Database 
+export const modelDeleteNode = (data, result) => {
+    // console.log('modelDeleteNode') 
+    // console.log('data => ', data) 
+    // console.log('result => ', result) 
+    // console.log(">>>>>>> MATCH (n { name: '" + data.name + "' }) DETACH DELETE n")
+     
+   db.run("MATCH (n { name: '" + data.name + "' }) DETACH DELETE n")
+   .then( data => {        
+       result(null, data);       
+   })
+   .catch(err => {
+       console.log(err);
+       result(err, null);
+   })
+}
 
 
 // MATCH (n:Person) RETURN n.name LIMIT 25
@@ -58,7 +90,7 @@ export const modelSaveNewNode = (data, result) => {
 // show all Nodes from Label in Neo4jDatabase
 export const modelAllNodes = (data, result) => {
     console.log('modelAllNodes => ', data)
-   db.run("MATCH (n:" + data.node + ") RETURN n.name LIMIT 25")
+   db.run("MATCH (n:" + data.node + ") RETURN n LIMIT 25")
    .then( data => {        
        result(null, data);       
    })

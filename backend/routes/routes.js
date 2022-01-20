@@ -4,7 +4,9 @@ import express from "express";
 import { 
     getAllLabels, 
     controllerSaveNewLabel, 
-    controllerSaveNewNode, 
+    controllerSaveNewNode,
+    controllerShowDataFromOneNode,
+    controllerDeleteNode,
     controllerAllNodes, 
     controllerSaveNodesRelations,
     controllerAllRelationships,
@@ -24,6 +26,11 @@ router.post('/new-label', controllerSaveNewLabel);
 // Save new Label with Node in Neo4j Database
 router.post('/new-node', controllerSaveNewNode);
 
+// show all Datas from one Node in Database
+router.post('/show-node-data', controllerShowDataFromOneNode);
+
+// delete a Node from Database
+router.post('/delete-node', controllerDeleteNode);
 
 // Save new Label with Node in Neo4j Database
 router.post('/all-nodes', controllerAllNodes);

@@ -1,5 +1,6 @@
 <template>
     <div>
+      ConnectNodes
         <b-container class="border mt-4 mb-4 p-4">
       Bitte Wähle zwei Hauptknoten aus um die Unterknoten zu Verbinden.
       <b-row>
@@ -147,7 +148,7 @@ export default {
   methods: {
     async nodeConnection1 () {
       console.log('nodeConnection1')
-      console.log('this.selectedLabel1 => ', this.selectedLabel1)
+      // console.log('this.selectedLabel1 => ', this.selectedLabel1)
       try {
         const response2 = await axios.post('http://localhost:5000/all-nodes', {
           node: this.selectedLabel1
@@ -156,9 +157,9 @@ export default {
         this.optionsSubNode1 = []
 
         response2.data.records.forEach((value, index) => {
-          this.optionsSubNode1.push(value._fields[0])
-          console.log(value._fields[0])
-          console.log(index)
+          this.optionsSubNode1.push(value._fields[0].properties.name)
+          // console.log(value._fields[0])
+          // console.log(index)
         })
 
         // this.optionsSubNode1 = this.contentItems
@@ -177,7 +178,7 @@ export default {
 
     async nodeConnection2 () {
       console.log('nodeConnection2 start')
-      console.log('this.selectedLabel2 => ', this.selectedLabel2)
+      // console.log('this.selectedLabel2 => ', this.selectedLabel2)
 
       console.log('nodeConnection Label 2', this.selectedLabel2)
       // this.nodeText = this.selectedLabel2
@@ -190,9 +191,9 @@ export default {
         this.optionsSubNode2 = []
 
         response2.data.records.forEach((value, index) => {
-          this.optionsSubNode2.push(value._fields[0])
-          console.log(value._fields[0])
-          console.log(index)
+          this.optionsSubNode2.push(value._fields[0].properties.name)
+          // console.log(value._fields[0])
+          // console.log(index)
         })
 
         // this.optionsSubNode1 = this.contentItems
