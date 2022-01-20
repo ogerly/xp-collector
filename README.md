@@ -1,5 +1,7 @@
 # XP-COLLECTOR
 
+https://youtu.be/ux5gSxy1w-s - Short tutorial in German language (20.01.2022)
+
 # Install
 
   ### Projekt
