@@ -1,19 +1,19 @@
 <template>
 <div>
   neovis
-    <b-container id="main-container" fluid>
-        <section id="graph-renderer">&nbsp;</section>
-    </b-container>
+  <div>
+    <b-input-group prepend="query" class="mt-3">
+      <b-form-input type="text" v-model="query"></b-form-input>
+      <b-input-group-append>
+        <b-button variant="info" @click="loadQuery"><b-icon icon="caret-right-fill"></b-icon></b-button>
+      </b-input-group-append>
+    </b-input-group>
+  </div>
 
-    <div>
-        <b-input-group prepend="query" class="mt-3">
-    <b-form-input type="text" v-model="query"></b-form-input>
-    <b-input-group-append>
-      <b-button variant="info" @click="loadQuery"><b-icon icon="caret-right-fill"></b-icon></b-button>
-    </b-input-group-append>
-  </b-input-group>
-  <p>MATCH (n) RETURN n</p>
-    </div>
+  <b-container id="main-container" fluid>
+    <section id="graph-renderer">&nbsp;</section>
+  </b-container>
+
 </div>
 </template>
 
@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     renderGraph () {
-      // console.log('neovis methods renderGraph')
+      console.log('neovis methods renderGraph')
       config.graphConfig.initial_cypher = 'MATCH (n)-[r]-(b) RETURN n, r, b'
       neovisInstance = new NeoVis(config.graphConfig)
       neovisInstance.render()
@@ -59,7 +59,7 @@ export default {
       // loader.hide()
     },
     getClickedNode () {
-      // console.log('neovis methods getClickedNode')
+      console.log('neovis methods getClickedNode')
       const node = document.getElementsByClassName('vis-tooltip')[0]
       if (typeof node !== 'undefined') {
         const hasChild = typeof node.childNodes[7] !== 'undefined'
@@ -69,14 +69,14 @@ export default {
       }
     },
     updateGraph (id) {
-      // console.log('neovis methods updateGraph')
+      console.log('neovis methods updateGraph')
       // loader = this.$loading.show()
-      const generalCypherById = 'MATCH (n)-[r]-(b) RETURN n, r, b'
+      const generalCypherById = 'MATCH (n)-[r]->(b) RETURN n, r, b'
       neovisInstance.renderWithCypher(generalCypherById)
       // loader.hide()
     },
     loadQuery () {
-      // console.log('neovis methods loadQuery')
+      console.log('neovis methods loadQuery')
       // console.log('this.query => ', this.query)
       config.graphConfig.initial_cypher = '' + this.query + ''
       neovisInstance = new NeoVis(config.graphConfig)

@@ -6,14 +6,21 @@ export const graphConfig = {
   labels: {
     Person: {
       caption: 'name',
-      community: false
-      // sizeCypher: 'MATCH (n) WHERE id(n) = $id MATCH (n)-[r]-() RETURN count(r) AS c'
+      community: '1',
+      thickness: 'weight',
+      sizeCypher: 'MATCH (n) WHERE id(n) = $id MATCH (n)-[r]-() RETURN count(r) AS c'
     },
     Bild: {
-      caption: 'name'
+      caption: 'name',
+      font: {
+        size: 16,
+        color: 'red'
+      }
     },
     Museum: {
-      caption: 'name'
+      caption: 'name',
+      size: 'pagerank'
+      // community: 'community'
     },
     Ort: {
       caption: 'name'
@@ -22,7 +29,8 @@ export const graphConfig = {
   relationships: {
     zeichnete: {
       thickness: 'weight',
-      caption: true
+      caption: true,
+      arrows: true
     },
     geboren: {
       thickness: 'weight',
@@ -32,5 +40,6 @@ export const graphConfig = {
       thickness: 'weight',
       caption: false
     }
-  }
+  },
+  initial_cypher: 'MATCH (n)-[r]->(m) RETURN n,r,m'
 }
