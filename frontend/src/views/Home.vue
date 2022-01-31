@@ -32,12 +32,13 @@
           :RelationsItems="RelationsItems"
           @get-label-nodes="getLabelNodes"
           @get-relationship="getRelationship"
+          @set-props-query="setPropsQuery"
 
       />
       </b-tab>
       <b-tab title="About" ><p>I'm a disabled tab!</p></b-tab>
     </b-tabs>
-    <NeoVis :propsQuery="propsQuery"/>
+    <NeoVis :propsQuery="propsQuery"  @get-label-nodes="getLabelNodes"/>
   </div>
 </template>
 
@@ -127,10 +128,10 @@ export default {
       }
     },
 
-    setPropsQuery (label, node) {
+    setPropsQuery (label, node, query) {
       console.log('home methods setPropsQuery (label) => ', label)
       console.log('setPropsQuery (node) => ', node)
-      this.propsQuery = { label, node }
+      this.propsQuery = { label, node, query }
       console.log('this.propsQuery => []', this.propsQuery)
     }
 

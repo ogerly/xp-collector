@@ -7,6 +7,7 @@
       <router-link to="/about">About</router-link>
     </div> -->
     <router-view/>
+    <small>vue: 2.6.12, bootstrap: 4.5.3, bootstrap-vue: 2.21.2, neovis.js: 2.0.0-alpha.9</small>
   </div>
 </template>
 

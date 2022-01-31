@@ -22,11 +22,11 @@
       </b-row>
       <br>
       <b-row class="mt-4">
-        <b-col>
+        <b-col id="col-label" :data-label="nodeContentText">
           Knoten für Label : {{nodeContentText}}
           <hr>
            <ul>
-            <li v-for="item in contentItems" :key="item.id" @click="$emit('set-props-query', nodeContentText, item.name)"><div >{{item.name}}</div></li>
+            <li v-for="item in contentItems" :key="item.id" @click="$emit('set-props-query', nodeContentText, item.name, '')"><div >{{item.name}}</div></li>
           </ul>
         </b-col>
       </b-row>

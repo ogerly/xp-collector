@@ -181,8 +181,13 @@ export default {
       // console.log('this.selectedLabel2 => ', this.selectedLabel2)
 
       console.log('nodeConnection Label 2', this.selectedLabel2)
+      const query = 'MATCH (a:' + this.selectedLabel1 + '), (aa:' + this.selectedLabel2 + '), (b:' + this.selectedLabel1 + ')-[r]-(c:' + this.selectedLabel2 + ') RETURN a,aa,b,r,c'
+      // alert(this.selectedLabel1 + ' ' + this.selectedLabel2)
+      console.log('query', query)
+
       // this.nodeText = this.selectedLabel2
       // await this.getLabelNodes()
+      this.$emit('set-props-query', '', '', query)
       try {
         const response2 = await axios.post('http://localhost:5000/all-nodes', {
           node: this.selectedLabel2

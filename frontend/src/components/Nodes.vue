@@ -102,7 +102,7 @@ export default {
     },
     async clickNode (label, item) {
       console.log('clickNode item', item)
-      this.$emit('set-props-query', this.nodeContentText, item.name)
+      this.$emit('set-props-query', this.nodeContentText, item.name, '')
 
       this.nodeContentAddName = item.name
       this.nodeContentAddInfo = item.info
