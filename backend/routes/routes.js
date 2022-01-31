@@ -7,10 +7,12 @@ import {
     controllerSaveNewNode,
     controllerShowDataFromOneNode,
     controllerDeleteNode,
+    controllerDeleteNodeByID,
     controllerAllNodes, 
     controllerSaveNodesRelations,
     controllerAllRelationships,
-    controllerDeleteEmptyLabels
+    controllerDeleteEmptyLabels,
+    controllerSetEdges
 } from "../controllers/neo4j.js";
 
 
@@ -29,8 +31,11 @@ router.post('/new-node', controllerSaveNewNode);
 // show all Datas from one Node in Database
 router.post('/show-node-data', controllerShowDataFromOneNode);
 
-// delete a Node from Database
+// delete a Node from Database by Name
 router.post('/delete-node', controllerDeleteNode);
+
+// delete a Node from Database by ID
+router.post('/delete-nodebyid', controllerDeleteNodeByID);
 
 // Save new Label with Node in Neo4j Database
 router.post('/all-nodes', controllerAllNodes);
@@ -44,6 +49,8 @@ router.get('/all-relationships', controllerAllRelationships);
 // Save  Nodes with Relations in Neo4j Database
 router.post('/delete-empty-label', controllerDeleteEmptyLabels);
 
+// zeichne eine Verbindung zwischen zwei Knoten 
+router.post('/set-edges', controllerSetEdges);
 
 // export default router
 export default router;

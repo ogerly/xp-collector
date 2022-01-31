@@ -32,7 +32,8 @@ export const modelSaveNewLabel = (data, result) => {
  // save a new Label with Node in Neo4jDatabase
 export const modelSaveNewNode = (data, result) => {
     console.log('modelSaveNewNode => ', data)
-
+    console.log("CREATE (n:" + data.label + " {name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
+    
     db.run("MATCH (n:" + data.label + ") where NOT (EXISTS (n.name)) detach delete n")
     .then(data1 => { 
         db.run("CREATE (n:" + data.label + " {name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
@@ -67,7 +68,7 @@ export const modelShowDataFromOneNode = (data, result) => {
    })
 }
 
-// sdelete a Node in Database 
+// delete a Node in Database by name
 export const modelDeleteNode = (data, result) => {
     // console.log('modelDeleteNode') 
     // console.log('data => ', data) 
@@ -75,6 +76,23 @@ export const modelDeleteNode = (data, result) => {
     // console.log(">>>>>>> MATCH (n { name: '" + data.name + "' }) DETACH DELETE n")
      
    db.run("MATCH (n { name: '" + data.name + "' }) DETACH DELETE n")
+   .then( data => {        
+       result(null, data);       
+   })
+   .catch(err => {
+       console.log(err);
+       result(err, null);
+   })
+}
+
+// delete a Node in Database by ID
+export const modelDeleteNodeByID = (data, result) => {
+    // console.log('modelDeleteNode') 
+    console.log('data => ', data) 
+    // console.log('result => ', result) 
+    console.log(">>>>>>> MATCH (n) where id(n) = "+data.id+" DETACH DELETE n")
+     
+   db.run("MATCH (n) where id(n) = "+data.id+" DETACH DELETE n")
    .then( data => {        
        result(null, data);       
    })
@@ -108,9 +126,9 @@ export const modelSaveNodesRelations = (data, result) => {
            (a:`+ data.label1 +`),(b:`+ data.label2 +`)
             WHERE a.name = '`+ data.node1+`' 
             AND b.name = '`+ data.node2 +`' 
-            CREATE (a)-[r:`+ data.relations +`]->(b)  
+            CREATE (a)-[r: RELATES_TO {title:'`+ data.relations +`'}]->(b)  
             RETURN r`)
-   .then( data => {        
+   .then( data => {   
        result(null, data);       
    })
    .catch(err => {
@@ -145,6 +163,22 @@ export const modelDeleteEmptyLabels = (data, result) => {
    db.run("MATCH (n:"+ data.node +") detach delete n")
    .then( data => {    
        // console.log('modelAllRelationships then => ', data)    
+       result(null, data);       
+   })
+   .catch(err => {
+       console.log(err);
+       result(err, null);
+   })
+}
+
+// zeichne eine Verbindung zwischen zwei Knoten 
+export const modelSetEdges = (data, result) => {
+    console.log('modelSetEdges => ', data)
+    console.log('modelSetEdges from id => ', data.from)
+    console.log('modelSetEdges to id=> ', data.to)
+    console.log('modelSetEdges query => ', data.to)
+   db.run("")
+   .then( data => {        
        result(null, data);       
    })
    .catch(err => {

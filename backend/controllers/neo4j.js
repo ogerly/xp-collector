@@ -5,6 +5,7 @@ import {
     modelSaveNewNode,
     modelShowDataFromOneNode,
     modelDeleteNode,
+    modelDeleteNodeByID,
     modelAllNodes, 
     modelSaveNodesRelations, 
     modelAllRelationships,
@@ -58,10 +59,22 @@ export const controllerSaveNewNode = (req, res) => {
         }
     });
 }
- // Delete a  Node in Database
+ // Delete a  Node in Database By Name
  export const controllerDeleteNode = (req, res) => {
     const data = req.body;
     modelDeleteNode(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+}
+
+ // Delete a  Node in Database By ID
+ export const controllerDeleteNodeByID = (req, res) => {
+    const data = req.body;
+    modelDeleteNodeByID(data, (err, results) => {
         if (err){
             res.send(err);
         }else{
@@ -117,3 +130,15 @@ export const controllerDeleteEmptyLabels = (req, res) => {
      }
  });
 }
+
+// zeichne eine Verbindung zwischen zwei Knoten 
+export const controllerSetEdges = (req, res) => {
+    const data = req.body;
+    modelSetEdges(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+   }
