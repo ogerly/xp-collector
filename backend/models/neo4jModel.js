@@ -18,7 +18,8 @@ export const modelAllLabels = (data, result) => {
 // save a new empty Label in Neo4jDatabase
 export const modelSaveNewLabel = (data, result) => {
     console.log('modelSaveNewLabel => ', data)
-    db.run("CREATE (n:" + data.node_text + ")")
+    console.log("CREATE (n: " + data.node_text + ")")
+    db.run("CREATE (n: " + data.node_text + ")")
     .then( data => {        
         result(null, data);       
     })
@@ -32,11 +33,11 @@ export const modelSaveNewLabel = (data, result) => {
  // save a new Label with Node in Neo4jDatabase
 export const modelSaveNewNode = (data, result) => {
     console.log('modelSaveNewNode => ', data)
-    console.log("CREATE (n:" + data.label + " {name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
+    console.log("CREATE (n: " + data.node_label + " { label: '" + data.node_name + "', name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
     
-    db.run("MATCH (n:" + data.label + ") where NOT (EXISTS (n.name)) detach delete n")
+    db.run("MATCH (n:" + data.node_label + ") where NOT (EXISTS (n.name)) detach delete n")
     .then(data1 => { 
-        db.run("CREATE (n:" + data.label + " {name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
+        db.run("CREATE (n: " + data.node_label + " {  label: '" + data.node_name + "', name: '" + data.node_name + "', info: 'Info zu " + data.node_info + "', img: '" + data.node_img + "'})")
         .then( data => {        
             result(null, data.label);       
         })
@@ -101,7 +102,18 @@ export const modelDeleteNodeByID = (data, result) => {
        result(err, null);
    })
 }
+// delete all Node and relationsships in Database !! ACHTUNG ALLes wird gelöscht !!
+export const modelDeleteAll = (data, result) => {
 
+   db.run("MATCH (n) DETACH DELETE n")
+   .then( data => {        
+       result(null, data);       
+   })
+   .catch(err => {
+       console.log(err);
+       result(err, null);
+   })
+}
 
 // MATCH (n:Person) RETURN n.name LIMIT 25
 
@@ -174,11 +186,24 @@ export const modelDeleteEmptyLabels = (data, result) => {
 // zeichne eine Verbindung zwischen zwei Knoten 
 export const modelSetEdges = (data, result) => {
     console.log('modelSetEdges => ', data)
+    console.log('modelSetEdges title => ', data.title)
     console.log('modelSetEdges from id => ', data.from)
     console.log('modelSetEdges to id=> ', data.to)
-    console.log('modelSetEdges query => ', data.to)
-   db.run("")
-   .then( data => {        
+    console.log('modelSetEdges query => ', `MATCH 
+    (a),(b)
+     WHERE ID(a) = `+ data.from+` 
+     AND ID(b) = `+ data.to +`
+     CREATE (a)-[r: RELATES_TO {title:'`+ data.title +`'}]->(b)  
+     RETURN r`)
+
+
+    db.run(`MATCH 
+           (a),(b)
+            WHERE ID(a) = `+ data.from+` 
+            AND ID(b) = `+ data.to +` 
+            CREATE (a)-[r: RELATES_TO {title:'`+ data.title +`'}]->(b)  
+            RETURN r`)
+   .then( data => {   
        result(null, data);       
    })
    .catch(err => {

@@ -6,10 +6,12 @@ import {
     modelShowDataFromOneNode,
     modelDeleteNode,
     modelDeleteNodeByID,
+    modelDeleteAll,
     modelAllNodes, 
     modelSaveNodesRelations, 
     modelAllRelationships,
-    modelDeleteEmptyLabels } from "../models/neo4jModel.js";
+    modelDeleteEmptyLabels,
+    modelSetEdges } from "../models/neo4jModel.js";
 
  
 
@@ -119,7 +121,7 @@ export const controllerAllNodes = (req, res) => {
     });
 }
 
-// Show All Relationschips
+// delete All Relationschips die keine  verbindung haben, alle die nicht verwendet werden
 export const controllerDeleteEmptyLabels = (req, res) => {
  const data = req.body;
  modelDeleteEmptyLabels(data, (err, results) => {
@@ -130,7 +132,17 @@ export const controllerDeleteEmptyLabels = (req, res) => {
      }
  });
 }
-
+// delete All knoten und relationships in der DB, !! alles wird gelöscht !!
+export const controllerDeleteAll = (req, res) => {
+    const data = req.body;
+    modelDeleteAll(data, (err, results) => {
+        if (err){
+            res.send(err);
+        }else{
+            res.json(results);
+        }
+    });
+   }
 // zeichne eine Verbindung zwischen zwei Knoten 
 export const controllerSetEdges = (req, res) => {
     const data = req.body;

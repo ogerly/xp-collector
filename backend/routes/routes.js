@@ -8,6 +8,7 @@ import {
     controllerShowDataFromOneNode,
     controllerDeleteNode,
     controllerDeleteNodeByID,
+    controllerDeleteAll,
     controllerAllNodes, 
     controllerSaveNodesRelations,
     controllerAllRelationships,
@@ -37,6 +38,9 @@ router.post('/delete-node', controllerDeleteNode);
 // delete a Node from Database by ID
 router.post('/delete-nodebyid', controllerDeleteNodeByID);
 
+// delete alle knoten und kanten deiner neo4j database
+router.post('/delete-all', controllerDeleteAll)
+
 // Save new Label with Node in Neo4j Database
 router.post('/all-nodes', controllerAllNodes);
 
@@ -46,7 +50,7 @@ router.post('/save-nodes-relations', controllerSaveNodesRelations);
 // Save  Nodes with Relations in Neo4j Database
 router.get('/all-relationships', controllerAllRelationships);
 
-// Save  Nodes with Relations in Neo4j Database
+// delete  Nodes with Relations in Neo4j Database
 router.post('/delete-empty-label', controllerDeleteEmptyLabels);
 
 // zeichne eine Verbindung zwischen zwei Knoten 
