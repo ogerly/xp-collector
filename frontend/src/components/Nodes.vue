@@ -1,7 +1,8 @@
 <template>
     <div class="component-node">
+     <hr>
         Unterknoten für
-            <h2>{{nodeContentText}}</h2>
+            <h2 id="col-label">{{nodeContentText}}</h2>
                <div>
             <b-input-group
               class=""
@@ -49,6 +50,15 @@ export default {
     },
     contentItems: {
       type: Array
+    },
+    nodes: {
+      type: Array
+    },
+    nodeContent: {
+      type: Object
+    },
+    labels: {
+      type: Array
     }
   },
   data () {
@@ -71,13 +81,14 @@ export default {
       }
       try {
         await axios.post('http://localhost:5000/new-node', {
-          label: this.nodeContentText,
+          // label: this.nodeContentText,
+          node_label: this.nodeContentText,
           node_name: this.nodeContentAddName,
           node_info: this.nodeContentAddInfo,
           node_img: this.nodeContentAddImg
         })
         this.$emit('get-label-nodes', this.nodeContentText)
-        // this.getLabelNodes(this.nodeText)
+        this.getLabelNodes(this.this.nodeContentText)
         // this.nodeText = ''
         // this.nodeContentAddText = ''
       } catch (err) {
@@ -102,11 +113,14 @@ export default {
     },
     async clickNode (label, item) {
       console.log('clickNode item', item)
-      this.$emit('set-props-query', this.nodeContentText, item.name, '')
 
       this.nodeContentAddName = item.name
       this.nodeContentAddInfo = item.info
       this.nodeContentAddImg = item.img
+
+      this.$emit('set-props-query', this.nodeContentText, item.name, '')
+      console.log('clickNode to  send-nodes-content-to-app', item)
+      this.$emit('send-nodes-content-to-app', item, label)
 
       // try {
       //   const response = await axios.post('http://localhost:5000/show-node-data', {

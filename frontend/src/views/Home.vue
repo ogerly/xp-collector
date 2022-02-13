@@ -1,32 +1,37 @@
 <template>
   <div class="home">
-    home
-    <b-tabs content-class="mt-3" align="center">
-      <b-tab title="Übersicht" active>
-        <CollectorWorld
-              :nodeItems="nodeItems"
-              :RelationsItems="RelationsItems"
-              :contentItems="contentItems"
-              :nodeContentText="nodeContentText"
-              @get-label-nodes="getLabelNodes"
-              @get-relationship="getRelationship"
-              @set-props-query="setPropsQuery"
-        />
-      </b-tab>
-      <b-tab title="+ Knoten">
-        <Labels
-              :nodeItems="nodeItems"
-              @get-labels="getLabels"
-              @get-label-nodes="getLabelNodes" />
+  <b-collapse id="collapse-1" class="mt-2">
+    <b-card>
         <Nodes
+          :labels="labels"
           :nodeContentText="nodeContentText"
           :contentItems="contentItems"
+          :nodeContent="nodeContent"
           @set-props-query="setPropsQuery"
-          @get-label-nodes="getLabelNodes"
+          @send-nodes-content-to-app="sendNodesContentToApp"
         />
-      </b-tab>
-      <b-tab title="+ Verbindungen">
+
+      <b-button v-b-toggle.collapse-1-inner size="sm">Toggle Add New Label </b-button>
+      <b-collapse id="collapse-1-inner" class="mt-2">
+
+        <b-card>
+          <Labels
+              :labels="labels"
+              :optionsLabels="optionsLabels"
+              @get-label-nodes="getLabelNodes"
+              @set-props-query="setPropsQuery"
+              @get-labels="getLabels"
+              @send-nodes-content-to-app="sendNodesContentToApp" />
+        </b-card>
+      </b-collapse>
+    </b-card>
+  </b-collapse>
+
+   <b-collapse id="collapse-2" class="mt-2">
+    <b-card>
+        <edges-list/>
         <ConnectNodes
+          :labels="labels"
           :optionsLabels="optionsLabels"
           :contentItems="contentItems"
           :RelationsItems="RelationsItems"
@@ -35,43 +40,56 @@
           @set-props-query="setPropsQuery"
 
       />
-      </b-tab>
-      <b-tab title="About" ><p>I'm a disabled tab!</p></b-tab>
-    </b-tabs>
-    <NeoVis :propsQuery="propsQuery"  @get-label-nodes="getLabelNodes"/>
+
+    </b-card>
+  </b-collapse>
+
+    <NeoVis :propsQuery="propsQuery"  @get-label-nodes="getLabelNodes" @delete-neo4j="deleteNeo4j"/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import axios from 'axios'
-import CollectorWorld from '@/components/CollectorWorld.vue'
+import EdgesList from '@/components/EdgesList.vue'
 import Labels from '@/components/Labels.vue'
 import Nodes from '@/components/Nodes.vue'
 import ConnectNodes from '@/components/ConnectNodes.vue'
-// import NetworkGraphExample from '@/components/NetworkGraphExample.vue'
 import NeoVis from '@/components/NeoVis.vue'
 
 export default {
   name: 'Home',
   components: {
-    CollectorWorld,
+    EdgesList,
     Labels,
     Nodes,
     ConnectNodes,
     NeoVis
   },
+  props: {
+    labels: {
+      type: Array
+    },
+    labelText: {
+      type: String
+    },
+    nodes: {
+      type: Array
+    },
+    nodeContent: {
+      type: Object
+    }
+  },
   data () {
     return {
-      nodeItems: [],
+      nodeNames: [],
       nodeText: '',
-      nodeContentItems: [],
       contentItems: [],
       nodeContentText: '',
       relationItems: [],
       RelationsItems: [],
       optionsLabels: [],
-      optionsNode1: [],
+      // optionsNode1: [],
       relationOptions: [],
       propsQuery: ''
     }
@@ -80,14 +98,20 @@ export default {
     this.getLabels()
   },
   methods: {
-    // Get All labels Neo4j
-    async getLabels (label) {
-      console.log('home methods getLabels label=>  ', label)
+    /* Lädt alle Labels
+     * return Array
+    */
+    async getLabels () {
       try {
         const response = await axios.get('http://localhost:5000/all-labels')
-        this.nodeItems = response.data.records
-        this.optionsNode1 = response.data.records
-        this.nodeText = label
+        // console.log('response.data.records', response.data.records)
+        if (response.data.records.length > 0) {
+          response.data.records.forEach((value, index) => {
+            this.labels.push(value._fields[0][0])
+          })
+        } else {
+          this.nodeText = 0
+        }
       } catch (err) {
         console.log(err)
       }
@@ -96,9 +120,13 @@ export default {
     // Get All Nodes from a Label Neo4j
     async getLabelNodes (label) {
       console.log('home methods getLabelNodes label=>  ', label)
+      this.contentItems = []
+      this.nodeNames = []
       this.nodeContentText = label
       this.nodeText = label
+      this.$emit('check-labels-text', label)
       if (label === '') {
+        console.log('home methods getLabelNodes  IST LEHR ')
         return
       }
       try {
@@ -106,7 +134,13 @@ export default {
           node: this.nodeText
         })
         // console.log('getLabelNodes response2', response2.data.records)
-        this.nodeContentItems = response2.data.records
+        response2.data.records.forEach((value, index) => {
+          this.contentItems.push(value._fields[0].properties)
+          this.nodeNames.push(value._fields[0].properties.name)
+          // console.log(value._fields[0].properties)
+          // console.log(index)
+        })
+        this.$emit('check-node-array', this.nodeNames)
       } catch (err) {
         console.log(err)
       }
@@ -129,35 +163,38 @@ export default {
     },
 
     setPropsQuery (label, node, query) {
-      console.log('home methods setPropsQuery (label) => ', label)
-      console.log('setPropsQuery (node) => ', node)
+      console.log('home methods setPropsQuery (label) => ')
+      // console.log('home methods setPropsQuery (label) => ', label)
+      // console.log('setPropsQuery (node) => ', node)
       this.propsQuery = { label, node, query }
-      console.log('this.propsQuery => []', this.propsQuery)
+      // console.log('this.propsQuery => []', this.propsQuery)
+    },
+
+    deleteNeo4j (neovis) {
+      console.log('delete all in DATABASE HOME')
+
+      this.$bvModal.msgBoxConfirm('ACHTUNG!Es wird die Database gelöscht! Alle Daten!! Bist du dir sicher?')
+        .then(value => {
+          try {
+            const response = axios.post('http://localhost:5000/delete-all')
+            console.log(response)
+            neovis.reload()
+          } catch (err) {
+            console.log(err)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
+    sendNodesContentToApp (item, label) {
+      // this.nodes = item
+      this.$emit('check-nodes-content', item, label)
     }
 
   },
   watch: {
-
-    optionsNode1: function () {
-      console.log('home watch optionsNode1', this.optionsNode1)
-      this.optionsNode1.forEach((value, index) => {
-        this.optionsLabels.push(value._fields[0][0])
-        // console.log(value._fields[0][0])
-        // console.log(index)
-      })
-      // return this.optionsLabels
-    },
-    nodeContentItems: function () {
-      this.contentItems = []
-      console.log('home watch nodeContentItems', this.nodeContentItems)
-      this.nodeContentItems.forEach((value, index) => {
-        this.contentItems.push(value._fields[0].properties)
-        console.log(value._fields[0].properties)
-        console.log(index)
-      })
-      console.log('++++ contentItems', this.contentItems)
-      // return this.contentItems
-    },
     relationItems: function () {
       this.RelationsItems = []
       // this.relationOptions = []

@@ -9,7 +9,7 @@
           <br>
           <b-form-select
             v-model="selectedLabel1"
-            :options="optionsLabels"
+            :options="labels"
             class="mb-3"
             value-field="name"
             text-field="name"
@@ -23,7 +23,7 @@
           <br>
           <b-form-select
             v-model="selectedLabel2"
-            :options="optionsLabels"
+            :options="labels"
             class="mb-3"
             value-field="name"
             text-field="name"
@@ -119,7 +119,7 @@ import axios from 'axios'
 export default {
   name: 'connect-nodes',
   props: {
-    optionsLabels: {
+    labels: {
       type: Array
     },
     contentItems: {
@@ -163,7 +163,7 @@ export default {
         })
 
         // this.optionsSubNode1 = this.contentItems
-        console.log('>>>>> this.optionsSubNode1 =>', this.optionsSubNode1)
+        // console.log('>>>>> this.optionsSubNode1 =>', this.optionsSubNode1)
         this.showNode1 = true
       } catch (err) {
         console.log(err)
@@ -197,8 +197,8 @@ export default {
 
         response2.data.records.forEach((value, index) => {
           this.optionsSubNode2.push(value._fields[0].properties.name)
-          // console.log(value._fields[0])
-          // console.log(index)
+          console.log(value._fields[0])
+          console.log(index)
         })
 
         // this.optionsSubNode1 = this.contentItems
