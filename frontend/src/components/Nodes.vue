@@ -88,9 +88,12 @@ export default {
           node_img: this.nodeContentAddImg
         })
         this.$emit('get-label-nodes', this.nodeContentText)
-        this.getLabelNodes(this.this.nodeContentText)
+        // this.getLabelNodes(this.nodeContentText)
         // this.nodeText = ''
         // this.nodeContentAddText = ''
+        this.nodeContentAddName = ''
+        this.nodeContentAddInfo = ''
+        this.nodeContentAddImg = ''
       } catch (err) {
         console.log(err)
       }

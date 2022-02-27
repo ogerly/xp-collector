@@ -7,6 +7,7 @@
           :nodeContentText="nodeContentText"
           :contentItems="contentItems"
           :nodeContent="nodeContent"
+          @get-label-nodes="getLabelNodes"
           @set-props-query="setPropsQuery"
           @send-nodes-content-to-app="sendNodesContentToApp"
         />
@@ -67,7 +68,7 @@ export default {
     NeoVis
   },
   props: {
-    labels: {
+    label_: {
       type: Array
     },
     labelText: {
@@ -82,6 +83,7 @@ export default {
   },
   data () {
     return {
+      labels: [],
       nodeNames: [],
       nodeText: '',
       contentItems: [],
@@ -102,6 +104,8 @@ export default {
      * return Array
     */
     async getLabels () {
+      console.log('Home.vue getLabels ()', this.labels)
+      this.labels = []
       try {
         const response = await axios.get('http://localhost:5000/all-labels')
         // console.log('response.data.records', response.data.records)
@@ -119,7 +123,7 @@ export default {
 
     // Get All Nodes from a Label Neo4j
     async getLabelNodes (label) {
-      console.log('home methods getLabelNodes label=>  ', label)
+      console.log('Home.vue getLabelNodes() =>  ', label)
       this.contentItems = []
       this.nodeNames = []
       this.nodeContentText = label
@@ -148,14 +152,14 @@ export default {
 
     // Get All Relationship Types in  Neo4j
     async getRelationship () {
-      console.log('home methods getRelationship')
+      console.log('Home.vue getRelationship()')
       // this.relationItems = []
       try {
         const response = await axios.get('http://localhost:5000/all-relationships')
 
         // console.log('getRelationship response => ', response)
         // console.log('getRelationship response.data => ', response.data)
-        // console.log('getRelationship response.data.records => ', response.data.records)
+        console.log('getRelationship response.data.records => ', response.data.records)
         this.relationItems = response.data.records
       } catch (err) {
         console.log(err)
@@ -163,7 +167,7 @@ export default {
     },
 
     setPropsQuery (label, node, query) {
-      console.log('home methods setPropsQuery (label) => ')
+      console.log('Home.vue setPropsQuery() => ')
       // console.log('home methods setPropsQuery (label) => ', label)
       // console.log('setPropsQuery (node) => ', node)
       this.propsQuery = { label, node, query }
@@ -202,10 +206,10 @@ export default {
       if (this.relationItems) {
         this.relationItems.forEach((value, index) => {
           this.RelationsItems.push(value._fields[0])
-        // console.log(value._fields[0])
+          console.log(value._fields[0])
         // console.log(index)
         })
-        // console.log('RelationsItems', this.RelationsItems)
+        console.log('RelationsItems', this.RelationsItems)
         this.relationOptions = this.RelationsItems
       // return this.RelationsItems
       }

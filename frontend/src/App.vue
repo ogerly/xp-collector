@@ -19,7 +19,7 @@
 
     <router-view
       :visible="visible1"
-      :labels="label_"
+      :label_="label_"
       :labelText="labelText_"
       :nodes="nodes_"
       :nodeContent="nodeContent_"

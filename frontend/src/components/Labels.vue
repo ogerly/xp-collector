@@ -38,7 +38,7 @@ export default {
   methods: {
     // Create New Label Neo4j
     async saveLabel () {
-      console.log('saveLabel()')
+      console.log('Labels.vue saveLabel()')
       this.labelText = this.labelText.replace(/ /i, '_')
       if (this.labelText === '') {
         alert('lehr ABBRUCH')
@@ -56,7 +56,7 @@ export default {
     },
     // Edit Nodes Neo4j
     clickLabel (label) {
-      console.log('EDIT LABEL [' + label + '] ')
+      console.log('Labels.vue clickLabel() ')
       // this.label = label
       // console.log(label)
       this.labelText = label
@@ -66,7 +66,7 @@ export default {
 
     // Create New Label with Node Neo4j
     async deleteEmptyLabel () {
-      console.log('deleteEmptyLabel')
+      console.log('Labels.vue deleteEmptyLabel() ')
       this.labelText = this.labelText.replace(/ /i, '_')
       if (this.labelText === '') {
         alert('lehr ABBRUCH')

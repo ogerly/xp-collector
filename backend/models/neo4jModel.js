@@ -138,7 +138,7 @@ export const modelSaveNodesRelations = (data, result) => {
            (a:`+ data.label1 +`),(b:`+ data.label2 +`)
             WHERE a.name = '`+ data.node1+`' 
             AND b.name = '`+ data.node2 +`' 
-            CREATE (a)-[r: RELATES_TO {title:'`+ data.relations +`'}]->(b)  
+            CREATE (a)-[r: `+ data.relations +` {title:'`+ data.relations +`'}]->(b)  
             RETURN r`)
    .then( data => {   
        result(null, data);       
@@ -189,11 +189,18 @@ export const modelSetEdges = (data, result) => {
     console.log('modelSetEdges title => ', data.title)
     console.log('modelSetEdges from id => ', data.from)
     console.log('modelSetEdges to id=> ', data.to)
-    console.log('modelSetEdges query => ', `MATCH 
+    // console.log('modelSetEdges query 1 => ', `MATCH 
+    // (a),(b)
+    //  WHERE ID(a) = `+ data.from+` 
+    //  AND ID(b) = `+ data.to +`
+    //  CREATE (a)-[r: RELATES_TO {title:'`+ data.title +`'}]->(b)  
+    //  RETURN r`)
+
+     console.log('modelSetEdges query 2 => ', `MATCH 
     (a),(b)
      WHERE ID(a) = `+ data.from+` 
      AND ID(b) = `+ data.to +`
-     CREATE (a)-[r: RELATES_TO {title:'`+ data.title +`'}]->(b)  
+     CREATE (a)-[r: `+ data.title + `{title:'`+ data.title +`'}]->(b)  
      RETURN r`)
 
 
@@ -201,7 +208,7 @@ export const modelSetEdges = (data, result) => {
            (a),(b)
             WHERE ID(a) = `+ data.from+` 
             AND ID(b) = `+ data.to +` 
-            CREATE (a)-[r: RELATES_TO {title:'`+ data.title +`'}]->(b)  
+            CREATE (a)-[r: `+ data.title + `{title:'`+ data.title +`'}]->(b)  
             RETURN r`)
    .then( data => {   
        result(null, data);       
