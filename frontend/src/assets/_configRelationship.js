@@ -8,14 +8,14 @@ let RELATIONSHIPString = ''
 */
 
 export default async function configRelationship () {
-  console.log('configRelationship()')
+  // console.log('configRelationship()')
   try {
     const response = await axios.get('http://localhost:5000/all-relationships')
-    console.log('iteresponseresponseresponsem', response.data.records)
+    // console.log('iteresponseresponseresponsem', response.data.records)
     response.data.records.forEach(function (item, key) {
-      console.log('item', item)
-      console.log('key', key)
-      console.log('item._fields[0]', item._fields[0])
+      // console.log('item', item)
+      // console.log('key', key)
+      // console.log('item._fields[0]', item._fields[0])
       if (key === 0) {
         RELATIONSHIPString = '{ "' + item._fields[0] + '": { "label": "title" }'
       } else {
