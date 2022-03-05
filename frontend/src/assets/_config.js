@@ -1,9 +1,12 @@
 import axios from 'axios'
 import configLabels from './_configLabels'
+import configRelationship from './_configRelationship'
 const $ = require('jquery')
 const Swal = require('sweetalert2')
 
 // console.log('configLabels', configLabels())
+
+// console.log('configRelationship', configRelationship())
 
 async function graphConfig () {
   return {
@@ -223,33 +226,36 @@ async function graphConfig () {
     //   //   label: 'name'
     //   // }
     // },
-    relationships: {
-      RELATES_TO: {
-        label: 'title'
-      }
-      // bob: {
-      //   label: 'title'
-      // },
-      // peter: {
-      //   label: 'title'
-      // },
-      // PETER: {
-      //   label: 'title'
-      // },
-      // orte: {
-      //   value: 'weight',
-      //   label: 'title'
-      // },
-      // orte2: {
-      //   value: 'weight',
-      //   label: 'title'
-      // },
-      // BELONGS: {
-      //   value: 'weight',
-      //   labels: false
-      // }
-    },
-    labels: await configLabels()
+    // relationships: {
+    //  RELATES_TO: {
+    //    label: 'title'
+    //  }
+    // bob: {
+    //   label: 'title'
+    // },
+    // peter: {
+    //   label: 'title'
+    // },
+    // PETER: {
+    //   label: 'title'
+    // },
+    // orte: {
+    //   value: 'weight',
+    //   label: 'title'
+    // },
+    // orte2: {
+    //   value: 'weight',
+    //   label: 'title'
+    // },
+    // BELONGS: {
+    //   value: 'weight',
+    //   labels: false
+    // }
+    // },
+
+    labels: await configLabels(),
+
+    relationships: await configRelationship()
   }
 }
 

@@ -157,7 +157,7 @@ export const modelAllRelationships = (data, result) => {
      
    db.run("MATCH (n)-[r]-(m) RETURN distinct type(r)")
    .then( data => {    
-       console.log('modelAllRelationships then => ', data)    
+       console.log('modelAllRelationships then data => ', data)    
        result(null, data);       
    })
    .catch(err => {
