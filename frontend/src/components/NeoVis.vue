@@ -3,6 +3,7 @@
   neovis
 
   <div>
+ <b-button size="sm" @click="reloadEdges">Verbindungen anzeigen</b-button>
  <b-button size="sm" @click="showAllNodes">Alle Knoten anzeigen</b-button>
 </div>
   <div>
@@ -16,14 +17,16 @@
   <b-container id="main-container" fluid>
     <section id="graph-renderer">&nbsp;</section>
   </b-container>
+  <hr>
+    <div class="mb-2">
+     <b-button variant="danger" @click="toDeleteNeo4j">Lösche alles in der Datenbank</b-button>
+    </div>
 </div>
 </template>
 
 <script>
-
 import NeoVis from 'neovis.js'
-import * as config from '../assets/_config'
-// import * as config from '../assets/testconfig'
+import configAsync from '../assets/_config'
 // let loader
 let neovisInstance
 export default {
@@ -58,21 +61,24 @@ export default {
     }
   },
   methods: {
-    showAllNodes () {
-      config.graphConfig.initialCypher = 'MATCH (n) RETURN n'
-      this.query = config.graphConfig.initialCypher
-      neovisInstance = new NeoVis(config.graphConfig)
+    async showAllNodes () {
+      const config = await configAsync()
+      // console.log('config', config)
+      config.initialCypher = 'MATCH (n) RETURN n'
+      this.query = config.initialCypher
+      neovisInstance = new NeoVis(config)
       neovisInstance.render()
       neovisInstance.registerOnEvent('completed', _ => {
         document.querySelector('.vis-network').addEventListener('dblclick', this.getClickedNode)
       })
     },
-    renderGraph () {
+    async renderGraph () {
+      const config = await configAsync()
       console.log('neovis methods renderGraph')
-      console.log('config.graphConfig', config.graphConfig)
-      config.graphConfig.initialCypher = 'MATCH (n)-[r]-(b) RETURN n, r, b'
-      neovisInstance = new NeoVis(config.graphConfig)
-      console.log('neovisInstance', neovisInstance)
+      // console.log('config', config)
+      config.initialCypher = 'MATCH (n)-[r]-(b) RETURN n, r, b'
+      neovisInstance = new NeoVis(config)
+      // console.log('neovisInstance', neovisInstance)
       neovisInstance.render()
       neovisInstance.registerOnEvent('completed', _ => {
         document.querySelector('.vis-network').addEventListener('dblclick', this.getClickedNode)
@@ -81,12 +87,17 @@ export default {
     },
     getClickedNode () {
       console.log('neovis methods getClickedNode')
+      neovisInstance.stabilize()
       const node = document.getElementsByClassName('vis-tooltip')[0]
       if (typeof node !== 'undefined') {
         const hasChild = typeof node.childNodes[7] !== 'undefined'
         const nodeChildren = hasChild ? node.childNodes[7] : node.childNodes[4]
         const nodeId = nodeChildren.nodeValue.replace(/\s/g, '')
         this.updateGraph(nodeId)
+      } else {
+        alert('is undefined')
+        console.log(document.querySelector('.vis-network'))
+        console.log(document.getElementsByClassName('vis-tooltip'))
       }
     },
     updateGraph (id) {
@@ -96,18 +107,51 @@ export default {
       neovisInstance.renderWithCypher(generalCypherById)
       // loader.hide()
     },
-    loadQuery () {
+    async loadQuery () {
+      const config = await configAsync()
       console.log('neovis methods loadQuery')
-      console.log('this.query => ', this.query)
-      console.log('this.query => ', document.getElementById('queryInput').value)
+      // console.log('this.query => ', this.query)
+      // console.log('this.query => ', document.getElementById('queryInput').value)
       if (this.query === '') {
         this.query = document.getElementById('queryInput').value
       }
-      config.graphConfig.initialCypher = '' + this.query + ''
-      neovisInstance = new NeoVis(config.graphConfig)
-      console.log("this.query.includes('CREATE') !!!", this.query.includes('CREATE'))
+      config.initialCypher = '' + this.query + ''
+      neovisInstance = new NeoVis(config)
+      // console.log("this.query.includes('CREATE') !!!", this.query.includes('CREATE'))
 
       neovisInstance.render()
+    },
+    async reloadEdges () {
+      const config = await configAsync()
+      neovisInstance = new NeoVis(config)
+      neovisInstance.render('MATCH (n)-[r]-(b) RETURN n, r, b')
+    },
+    async toDeleteNeo4j () {
+      const config = await configAsync()
+      console.log('toDeleteNeo4j delete all in DATABASE for emit')
+
+      this.$bvModal.msgBoxConfirm('Es wird die Database gelöscht! Alle Daten!! Bist du dir sicher?', {
+        title: 'ACHTUNG!'
+      })
+        .then(value => {
+          try {
+            neovisInstance = new NeoVis(config)
+            neovisInstance.render('MATCH (n) DETACH DELETE n')
+            this.makeToast('danger')
+          } catch (err) {
+            console.log(err)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    makeToast (variant = null) {
+      this.$bvToast.toast('Die Datenbank wurde vollständig gelöscht!', {
+        title: 'Neo4j Datenbank',
+        variant: variant,
+        solid: true
+      })
     }
 
   },
@@ -119,20 +163,33 @@ export default {
     this.renderGraph()
   },
   watch: {
-    propsQuery: function () {
+    propsQuery: async function () {
+      const config = await configAsync()
+      console.log('propsQuery')
+      // console.log('propsQuery', this.propsQuery)
       if (this.propsQuery.label !== '' && this.propsQuery.node !== '') {
-        this.query = 'MATCH (n:' + this.propsQuery.label + ' {name: "' + this.propsQuery.node + '"})-[r]->(m) RETURN n,r,m'
+        this.query = 'MATCH (n:' + this.propsQuery.label + ' {name: "' + this.propsQuery.node + '"})-[r]-(m) RETURN n,r,m'
+        this.propsQuery.query = 'MATCH (n:' + this.propsQuery.label + ' {name: "' + this.propsQuery.node + '"})-[r]-(m) RETURN n,r,m'
+      }
+      if (this.propsQuery.query === 'LABEL') {
+        this.propsQuery.query = 'MATCH (n:' + this.propsQuery.label + ') RETURN n'
       }
       if (this.propsQuery.query !== '') {
         this.query = this.propsQuery.query
       }
-      config.graphConfig.initialCypher = '' + this.query + ''
-      neovisInstance = new NeoVis(config.graphConfig)
+      config.initialCypher = '' + this.query + ''
+      neovisInstance = new NeoVis(config)
       // const str = JSON.stringify(neovisInstance._data.edges, null, 2)
       neovisInstance.render()
     }
   }
 }
+/*
+ neovisInstance.render('MATCH (n) RETURN n') = jede query die per neo4j ausfühbar ist wird mit neovis gerendert
+neovisInstance.clearNetwork() = löscht alle gerenderten knoten und kanten im frontend, es löscht nichts in der DB
+neovisInstance.registerOnEvent
+
+*/
 </script>
 
 <style scoped>

@@ -22,8 +22,6 @@ Frontend
         About.vue
         |
         components
-            CollectorWorld.vue
-            | 
             Labels.vue
             |
             Nodes.vue
