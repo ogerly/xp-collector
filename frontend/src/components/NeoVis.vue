@@ -1,27 +1,35 @@
 <template>
-<div>
-  neovis
+  <div>
+    neovis
 
-  <div>
- <b-button size="sm" @click="reloadEdges">Verbindungen anzeigen</b-button>
- <b-button size="sm" @click="showAllNodes">Alle Knoten anzeigen</b-button>
-</div>
-  <div>
-    <b-input-group prepend="query" class="mt-3">
-      <b-form-input id="queryInput" type="text" v-model="query"></b-form-input>
-      <b-input-group-append>
-        <b-button id="loadQueryButton" variant="info" @click="loadQuery"><b-icon icon="caret-right-fill"></b-icon></b-button>
-      </b-input-group-append>
-    </b-input-group>
-  </div>
-  <b-container id="main-container" fluid>
-    <section id="graph-renderer">&nbsp;</section>
-  </b-container>
-  <hr>
-    <div class="mb-2">
-     <b-button variant="danger" @click="toDeleteNeo4j">Lösche alles in der Datenbank</b-button>
+    <div>
+      <b-button size="sm" @click="reloadEdges">Verbindungen anzeigen</b-button>
+      <b-button size="sm" @click="showAllNodes">Alle Knoten anzeigen</b-button>
     </div>
-</div>
+    <div>
+      <b-input-group prepend="query" class="mt-3">
+        <b-form-input
+          id="queryInput"
+          type="text"
+          v-model="query"
+        ></b-form-input>
+        <b-input-group-append>
+          <b-button id="loadQueryButton" variant="info" @click="loadQuery"
+            ><b-icon icon="caret-right-fill"></b-icon
+          ></b-button>
+        </b-input-group-append>
+      </b-input-group>
+    </div>
+    <b-container id="main-container" fluid>
+      <section id="graph-renderer">&nbsp;</section>
+    </b-container>
+    <hr />
+    <div class="mb-2">
+      <b-button variant="danger" @click="toDeleteNeo4j"
+        >Lösche alles in der Datenbank</b-button
+      >
+    </div>
+  </div>
 </template>
 
 <script>
@@ -57,7 +65,6 @@ export default {
       info: '',
       img: '',
       nameState: null
-
     }
   },
   methods: {
@@ -68,8 +75,10 @@ export default {
       this.query = config.initialCypher
       neovisInstance = new NeoVis(config)
       neovisInstance.render()
-      neovisInstance.registerOnEvent('completed', _ => {
-        document.querySelector('.vis-network').addEventListener('dblclick', this.getClickedNode)
+      neovisInstance.registerOnEvent('completed', (_) => {
+        document
+          .querySelector('.vis-network')
+          .addEventListener('dblclick', this.getClickedNode)
       })
     },
     async renderGraph () {
@@ -80,8 +89,10 @@ export default {
       neovisInstance = new NeoVis(config)
       // console.log('neovisInstance', neovisInstance)
       neovisInstance.render()
-      neovisInstance.registerOnEvent('completed', _ => {
-        document.querySelector('.vis-network').addEventListener('dblclick', this.getClickedNode)
+      neovisInstance.registerOnEvent('completed', (_) => {
+        document
+          .querySelector('.vis-network')
+          .addEventListener('dblclick', this.getClickedNode)
       })
       // loader.hide()
     },
@@ -130,10 +141,14 @@ export default {
       const config = await configAsync()
       console.log('toDeleteNeo4j delete all in DATABASE for emit')
 
-      this.$bvModal.msgBoxConfirm('Es wird die Database gelöscht! Alle Daten!! Bist du dir sicher?', {
-        title: 'ACHTUNG!'
-      })
-        .then(value => {
+      this.$bvModal
+        .msgBoxConfirm(
+          'Es wird die Database gelöscht! Alle Daten!! Bist du dir sicher?',
+          {
+            title: 'ACHTUNG!'
+          }
+        )
+        .then((value) => {
           try {
             neovisInstance = new NeoVis(config)
             neovisInstance.render('MATCH (n) DETACH DELETE n')
@@ -142,7 +157,7 @@ export default {
             console.log(err)
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -153,7 +168,6 @@ export default {
         solid: true
       })
     }
-
   },
   beforeMount () {
     // loader = this.$loading.show()
@@ -168,11 +182,22 @@ export default {
       console.log('propsQuery')
       // console.log('propsQuery', this.propsQuery)
       if (this.propsQuery.label !== '' && this.propsQuery.node !== '') {
-        this.query = 'MATCH (n:' + this.propsQuery.label + ' {name: "' + this.propsQuery.node + '"})-[r]-(m) RETURN n,r,m'
-        this.propsQuery.query = 'MATCH (n:' + this.propsQuery.label + ' {name: "' + this.propsQuery.node + '"})-[r]-(m) RETURN n,r,m'
+        this.query =
+          'MATCH (n:' +
+          this.propsQuery.label +
+          ' {name: "' +
+          this.propsQuery.node +
+          '"})-[r]-(m) RETURN n,r,m'
+        this.propsQuery.query =
+          'MATCH (n:' +
+          this.propsQuery.label +
+          ' {name: "' +
+          this.propsQuery.node +
+          '"})-[r]-(m) RETURN n,r,m'
       }
       if (this.propsQuery.query === 'LABEL') {
-        this.propsQuery.query = 'MATCH (n:' + this.propsQuery.label + ') RETURN n'
+        this.propsQuery.query =
+          'MATCH (n:' + this.propsQuery.label + ') RETURN n'
       }
       if (this.propsQuery.query !== '') {
         this.query = this.propsQuery.query
@@ -193,15 +218,15 @@ neovisInstance.registerOnEvent
 </script>
 
 <style scoped>
-    #main-container {
-        height: 100%;
-        background-color: bisque;
-    }
-    #graph-renderer  {
-        /*height: calc(100% - 84px) !important;*/
-        height: 100%;
-        padding: 20px;
-        overflow: hidden;
-        height: 766px;
-    }
+#main-container {
+  height: 100%;
+  background-color: bisque;
+}
+#graph-renderer {
+  /*height: calc(100% - 84px) !important;*/
+  height: 100%;
+  padding: 20px;
+  overflow: hidden;
+  height: 766px;
+}
 </style>

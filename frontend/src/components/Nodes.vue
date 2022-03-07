@@ -1,43 +1,50 @@
 <template>
-    <div class="component-node">
-     <hr>
-        Unterknoten für
-            <h2 id="col-label">{{nodeContentText}}</h2>
-               <div>
-            <b-input-group
-              class=""
-              prepend="name"
-            >
-              <b-form-input v-model="nodeContentAddName"></b-form-input>
-              <b-input-group-append>
-              </b-input-group-append>
-            </b-input-group>
-            <b-input-group
-              class=""
-              prepend="info"
-            >
-              <b-form-input v-model="nodeContentAddInfo"></b-form-input>
-              <b-input-group-append>
-              </b-input-group-append>
-            </b-input-group>
-            <b-input-group
-              class="mb-3"
-              prepend="image"
-            >
-              <b-form-input v-model="nodeContentAddImg"></b-form-input>
-              <b-input-group-append>
-                <b-button size="sm" text="Button" variant="success" @click="saveNode(nodeContentAddName)">save</b-button>
-                <b-button size="sm" text="Button" variant="danger" @click="deleteNode(nodeContentAddName)">delete</b-button>
-                <b-button size="sm" text="Button" variant="warning" >update</b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </div>
-            <hr>
-             <ul>
-            <li v-for="item in contentItems" :key="item.id" @click="clickNode(nodeContentText, item)"><div >{{item.name}}</div></li>
-          </ul>
-
+  <div class="component-node">
+    <hr />
+    Unterknoten für
+    <h2 id="col-label">{{ nodeContentText }}</h2>
+    <div>
+      <b-input-group prepend="name">
+        <b-form-input v-model="nodeContentAddName"></b-form-input>
+      </b-input-group>
+      <b-input-group prepend="info">
+        <b-form-input v-model="nodeContentAddInfo"></b-form-input>
+      </b-input-group>
+      <b-input-group prepend="image">
+        <b-form-input v-model="nodeContentAddImg"></b-form-input>
+      </b-input-group>
+      <b-input-group class="mb-3" prepend="link">
+        <b-form-input v-model="nodeContentAddLink"></b-form-input>
+        <b-input-group-append>
+          <b-button
+            size="sm"
+            text="Button"
+            variant="success"
+            @click="saveNode(nodeContentAddName)"
+            >save</b-button
+          >
+          <b-button
+            size="sm"
+            text="Button"
+            variant="danger"
+            @click="deleteNode(nodeContentAddName)"
+            >delete</b-button
+          >
+          <b-button size="sm" text="Button" variant="warning">update</b-button>
+        </b-input-group-append>
+      </b-input-group>
     </div>
+    <hr />
+    <ul>
+      <li
+        v-for="item in contentItems"
+        :key="item.id"
+        @click="clickNode(nodeContentText, item)"
+      >
+        <div>{{ item.name }}</div>
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
 import axios from 'axios'
@@ -66,7 +73,6 @@ export default {
       nodeContentAddName: '',
       nodeContentAddInfo: '',
       nodeContentAddImg: ''
-
     }
   },
   methods: {

@@ -47,7 +47,8 @@ export const graphConfig = {
   labels: {
     Person: {
       label: 'name',
-      sizeCypher: 'MATCH (n) WHERE id(n) = $id MATCH (n)-[r]-() RETURN count(r) AS c'
+      sizeCypher:
+        'MATCH (n) WHERE id(n) = $id MATCH (n)-[r]-() RETURN count(r) AS c'
     },
     Bild: {
       label: 'name'

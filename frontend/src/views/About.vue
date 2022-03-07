@@ -1,7 +1,7 @@
 <template>
   <div class="about">
-    <br>
-    <br>
+    <br />
+    <br />
     <h1>XP Collector</h1>
     <hr />
     <h2>Frontend Bibliotheken</h2>
@@ -24,8 +24,15 @@
       <li>express 4.17.1</li>
       <li>mysql2 2.3.2</li>
     </ul>
-    <p><a href="https://chencyl.github.io/vue-network-d3/" target="_blank">https://chencyl.github.io/vue-network-d3/</a></p>
-    <p><a href="https://eisman.github.io/neo4jd3/" target="_blank">https://eisman.github.io/neo4jd3/</a></p>
-
+    <p>
+      <a href="https://chencyl.github.io/vue-network-d3/" target="_blank"
+        >https://chencyl.github.io/vue-network-d3/</a
+      >
+    </p>
+    <p>
+      <a href="https://eisman.github.io/neo4jd3/" target="_blank"
+        >https://eisman.github.io/neo4jd3/</a
+      >
+    </p>
   </div>
 </template>

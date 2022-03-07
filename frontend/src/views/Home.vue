@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-  <b-collapse id="collapse-1" class="mt-2">
-    <b-card>
+    <b-collapse id="collapse-1" class="mt-2">
+      <b-card>
         <Nodes
           :labels="labels"
           :nodeContentText="nodeContentText"
@@ -12,25 +12,27 @@
           @send-nodes-content-to-app="sendNodesContentToApp"
         />
 
-      <b-button v-b-toggle.collapse-1-inner size="sm">Toggle Add New Label </b-button>
-      <b-collapse id="collapse-1-inner" class="mt-2">
-
-        <b-card>
-          <Labels
+        <b-button v-b-toggle.collapse-1-inner size="sm"
+          >Toggle Add New Label
+        </b-button>
+        <b-collapse id="collapse-1-inner" class="mt-2">
+          <b-card>
+            <Labels
               :labels="labels"
               :optionsLabels="optionsLabels"
               @get-label-nodes="getLabelNodes"
               @set-props-query="setPropsQuery"
               @get-labels="getLabels"
-              @send-nodes-content-to-app="sendNodesContentToApp" />
-        </b-card>
-      </b-collapse>
-    </b-card>
-  </b-collapse>
+              @send-nodes-content-to-app="sendNodesContentToApp"
+            />
+          </b-card>
+        </b-collapse>
+      </b-card>
+    </b-collapse>
 
-   <b-collapse id="collapse-2" class="mt-2">
-    <b-card>
-        <edges-list/>
+    <b-collapse id="collapse-2" class="mt-2">
+      <b-card>
+        <edges-list />
         <ConnectNodes
           :labels="labels"
           :optionsLabels="optionsLabels"
@@ -39,13 +41,15 @@
           @get-label-nodes="getLabelNodes"
           @get-relationship="getRelationship"
           @set-props-query="setPropsQuery"
+        />
+      </b-card>
+    </b-collapse>
 
-      />
-
-    </b-card>
-  </b-collapse>
-
-    <NeoVis :propsQuery="propsQuery"  @get-label-nodes="getLabelNodes" @delete-neo4j="deleteNeo4j"/>
+    <NeoVis
+      :propsQuery="propsQuery"
+      @get-label-nodes="getLabelNodes"
+      @delete-neo4j="deleteNeo4j"
+    />
   </div>
 </template>
 
@@ -102,7 +106,7 @@ export default {
   methods: {
     /* Lädt alle Labels
      * return Array
-    */
+     */
     async getLabels () {
       console.log('Home.vue getLabels ()', this.labels)
       this.labels = []
@@ -155,11 +159,16 @@ export default {
       console.log('Home.vue getRelationship()')
       // this.relationItems = []
       try {
-        const response = await axios.get('http://localhost:5000/all-relationships')
+        const response = await axios.get(
+          'http://localhost:5000/all-relationships'
+        )
 
         // console.log('getRelationship response => ', response)
         // console.log('getRelationship response.data => ', response.data)
-        console.log('getRelationship response.data.records => ', response.data.records)
+        console.log(
+          'getRelationship response.data.records => ',
+          response.data.records
+        )
         this.relationItems = response.data.records
       } catch (err) {
         console.log(err)
@@ -177,8 +186,11 @@ export default {
     deleteNeo4j (neovis) {
       console.log('delete all in DATABASE HOME')
 
-      this.$bvModal.msgBoxConfirm('ACHTUNG!Es wird die Database gelöscht! Alle Daten!! Bist du dir sicher?')
-        .then(value => {
+      this.$bvModal
+        .msgBoxConfirm(
+          'ACHTUNG!Es wird die Database gelöscht! Alle Daten!! Bist du dir sicher?'
+        )
+        .then((value) => {
           try {
             const response = axios.post('http://localhost:5000/delete-all')
             console.log(response)
@@ -187,7 +199,7 @@ export default {
             console.log(err)
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -196,7 +208,6 @@ export default {
       // this.nodes = item
       this.$emit('check-nodes-content', item, label)
     }
-
   },
   watch: {
     relationItems: function () {
@@ -207,11 +218,11 @@ export default {
         this.relationItems.forEach((value, index) => {
           this.RelationsItems.push(value._fields[0])
           console.log(value._fields[0])
-        // console.log(index)
+          // console.log(index)
         })
         console.log('RelationsItems', this.RelationsItems)
         this.relationOptions = this.RelationsItems
-      // return this.RelationsItems
+        // return this.RelationsItems
       }
     }
   }
@@ -234,18 +245,18 @@ a {
 }
 .border {
   border: 1px;
-border: 2px dotted;
-border: medium dashed rgb(125, 181, 233);
-background-color: #5467611a;
+  border: 2px dotted;
+  border: medium dashed rgb(125, 181, 233);
+  background-color: #5467611a;
 }
 .border2 {
-background-color: #cdcf563b;
+  background-color: #cdcf563b;
 }
 .border3 {
-background-color: #5bc9a636;
+  background-color: #5bc9a636;
 }
 .border4 {
-background-color: #c98c5b36;
+  background-color: #c98c5b36;
 }
 
 /*Start Button Line*/
@@ -272,7 +283,6 @@ background-color: #c98c5b36;
   padding-top: 7px;
   display: block;
   font-size: xx-large;
-
 }
 
 hr.new5 {

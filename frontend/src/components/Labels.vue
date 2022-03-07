@@ -1,24 +1,31 @@
 <template>
-    <div class="component-labels">
-         <div >Labels</div>
-          <div>
-            <b-input-group
-              class="mb-3"
-              prepend="Knoten"
-            >
-              <b-form-input v-model="labelText"></b-form-input>
-              <b-input-group-append>
-                <b-button size="sm" text="Button" variant="success" @click="saveLabel">save</b-button>
-                <b-button size="sm" text="Button" variant="danger" @click="deleteEmptyLabel">delete</b-button>
-                <b-button size="sm" text="Button" variant="warning">update</b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </div>
-          <hr>
-          <ul>
-            <li v-for="item in labels" :key="item.id"><div @click="clickLabel(item)">{{item}}</div></li>
-          </ul>
+  <div class="component-labels">
+    <div>Labels</div>
+    <div>
+      <b-input-group class="mb-3" prepend="Knoten">
+        <b-form-input v-model="labelText"></b-form-input>
+        <b-input-group-append>
+          <b-button size="sm" text="Button" variant="success" @click="saveLabel"
+            >save</b-button
+          >
+          <b-button
+            size="sm"
+            text="Button"
+            variant="danger"
+            @click="deleteEmptyLabel"
+            >delete</b-button
+          >
+          <b-button size="sm" text="Button" variant="warning">update</b-button>
+        </b-input-group-append>
+      </b-input-group>
     </div>
+    <hr />
+    <ul>
+      <li v-for="item in labels" :key="item.id">
+        <div @click="clickLabel(item)">{{ item }}</div>
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
 import axios from 'axios'
