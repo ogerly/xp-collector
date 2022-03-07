@@ -1,13 +1,12 @@
 <template>
-  <div id="app" >
-
+  <div id="app">
     <navbar
       :visible="visible1"
       :navbarContent="navbarContent"
-      :class="visible?'visible':''"
+      :class="visible ? 'visible' : ''"
       @check-navbar-content="checkNavbarContent"
     />
-     <!-- node APP: {{nodes_}}-->
+    <!-- node APP: {{nodes_}}-->
     <sidebar
       :visible="visible1"
       :navbarContent="navbarContent"
@@ -15,7 +14,8 @@
       :labelText="labelText_"
       :nodes="nodes_"
       :nodeContent="nodeContent_"
-      @check-visible="checkVisible" />
+      @check-visible="checkVisible"
+    />
 
     <router-view
       :visible="visible1"
@@ -26,10 +26,14 @@
       @check-labels-text="checkLabelsText"
       @check-nodes-content="checkNodesContent"
       @check-node-array="checkNodeArray"
-      :class="(visible?'visible':'')"
-      class="m-3"/>
+      :class="visible ? 'visible' : ''"
+      class="m-3"
+    />
 
-    <small>vue: 2.6.12, bootstrap: 4.5.3, bootstrap-vue: 2.21.2, neovis.js: 2.0.0-alpha.9</small>
+    <small
+      >vue: 2.6.12, bootstrap: 4.5.3, bootstrap-vue: 2.21.2, neovis.js:
+      2.0.0-alpha.9</small
+    >
   </div>
 </template>
 <script>
@@ -94,7 +98,6 @@ export default {
     }
   }
 }
-
 </script>
 <style>
 #app {
@@ -117,6 +120,6 @@ export default {
   color: #42b983;
 }
 .visible {
-  padding-left: 320px ;
+  padding-left: 320px;
 }
 </style>

@@ -1,38 +1,45 @@
 <template>
- <div>
-  <b-sidebar id="sidebar-1" ref="sidebar-1" title="Sidebar" no-header shadow v-model="visible1" @change="setVisible">
-      <b-button variant="primary" block v-b-toggle="['sidebar-1']">Close Sidebar</b-button>
+  <div>
+    <b-sidebar
+      id="sidebar-1"
+      ref="sidebar-1"
+      title="Sidebar"
+      no-header
+      shadow
+      v-model="visible1"
+      @change="setVisible"
+    >
+      <b-button variant="primary" block v-b-toggle="['sidebar-1']"
+        >Close Sidebar</b-button
+      >
       sibebar.vue
 
-      <hr>
-      labels {{labels}}
-      <hr>
-      nodes {{nodes}}
-      <hr>
+      <hr />
+      labels {{ labels }}
+      <hr />
+      nodes {{ nodes }}
+      <hr />
 
-      labelsText {{labelText}}
-      <hr>
+      labelsText {{ labelText }}
+      <hr />
       <div class="px-3 py-2">
-
-        <h3>{{nodeContent.name}}</h3>
+        <h3>{{ nodeContent.name }}</h3>
         <p>
-
-          {{nodeContent.info}}
+          {{ nodeContent.info }}
         </p>
 
         <b-img :src="nodeContent.img" fluid thumbnail></b-img>
-        <hr>
-        nodeContent {{nodeContent}}
+        <hr />
+        nodeContent {{ nodeContent }}
       </div>
     </b-sidebar>
-</div>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'Sidebar',
-  components: {
-  },
+  components: {},
   props: {
     visible: {
       type: Boolean
@@ -73,6 +80,6 @@ export default {
 </script>
 <style scoped>
 .badge {
-  color:black;
+  color: black;
 }
 </style>

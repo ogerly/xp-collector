@@ -1,4 +1,3 @@
-
 import axios from 'axios'
 let LABELString = ''
 
@@ -15,7 +14,8 @@ export default async function configLabels () {
       if (key === 0) {
         LABELString = '{ "' + item._fields[0][0] + '": { "label": "name" }'
       } else {
-        LABELString = LABELString + ',  "' + item._fields[0][0] + '": { "label": "name" }'
+        LABELString =
+          LABELString + ',  "' + item._fields[0][0] + '": { "label": "name" }'
       }
     })
     LABELString = JSON.parse(LABELString + '}')

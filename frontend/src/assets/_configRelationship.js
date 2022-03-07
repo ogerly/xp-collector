@@ -1,4 +1,3 @@
-
 import axios from 'axios'
 let RELATIONSHIPString = ''
 
@@ -17,9 +16,14 @@ export default async function configRelationship () {
       // console.log('key', key)
       // console.log('item._fields[0]', item._fields[0])
       if (key === 0) {
-        RELATIONSHIPString = '{ "' + item._fields[0] + '": { "label": "title" }'
+        RELATIONSHIPString =
+          '{ "' + item._fields[0] + '": { "label": "title" }'
       } else {
-        RELATIONSHIPString = RELATIONSHIPString + ',  "' + item._fields[0] + '": { "label": "title" }'
+        RELATIONSHIPString =
+          RELATIONSHIPString +
+          ',  "' +
+          item._fields[0] +
+          '": { "label": "title" }'
       }
     })
     RELATIONSHIPString = JSON.parse(RELATIONSHIPString + '}')

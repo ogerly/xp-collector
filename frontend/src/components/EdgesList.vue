@@ -1,38 +1,37 @@
 <template>
-  <div class="hello w-100" >
+  <div class="hello w-100">
     edgelist
     <b-container fluid class="w-100 bv-example-row border mb-4 mt-4 p-2">
       <b-row>
-
         <b-col class="border3">
           <div class="">Kanten / Verbindung</div>
           <div v-show="editBox">
-
-            {{query}}
+            {{ query }}
             <div @click="editBox = false">schließen</div>
-            </div>
-          <b-badge @click="editRelationship(item)" v-for="item in RelationsItems" :key="item.id" pill variant="secondary">{{item}}</b-badge>
+          </div>
+          <b-badge
+            @click="editRelationship(item)"
+            v-for="item in RelationsItems"
+            :key="item.id"
+            pill
+            variant="secondary"
+            >{{ item }}</b-badge
+          >
         </b-col>
       </b-row>
-      <br>
-
+      <br />
     </b-container>
-
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Overview',
-  components: {
-  },
+  components: {},
   props: {
-
     RelationsItems: {
       type: Array
     }
-
   },
   data () {
     return {
@@ -56,6 +55,6 @@ export default {
 </script>
 <style scoped>
 .badge {
-  color:black;
+  color: black;
 }
 </style>

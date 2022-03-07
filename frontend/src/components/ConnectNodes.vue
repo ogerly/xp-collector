@@ -1,12 +1,12 @@
 <template>
-    <div>
-      ConnectNodes
-        <b-container class="border mt-4 mb-4 p-4">
+  <div>
+    ConnectNodes
+    <b-container class="border mt-4 mb-4 p-4">
       Bitte Wähle zwei Hauptknoten aus um die Unterknoten zu Verbinden.
       <b-row>
         <b-col>
           <label>Label 1</label>
-          <br>
+          <br />
           <b-form-select
             v-model="selectedLabel1"
             :options="labels"
@@ -14,13 +14,13 @@
             value-field="name"
             text-field="name"
             disabled-field="notEnabled"
-            @change="nodeConnection1()">
+            @change="nodeConnection1()"
+          >
           </b-form-select>
-
         </b-col>
         <b-col>
           <label>Label 2</label>
-          <br>
+          <br />
           <b-form-select
             v-model="selectedLabel2"
             :options="labels"
@@ -28,30 +28,31 @@
             value-field="name"
             text-field="name"
             disabled-field="notEnabled"
-            @change="nodeConnection2()">
+            @change="nodeConnection2()"
+          >
           </b-form-select>
         </b-col>
       </b-row>
       <b-container class="border4 p-3">
         <b-row>
-          <b-col v-if="selectedLabel1 ">
+          <b-col v-if="selectedLabel1">
             <h3>{{ selectedLabel1 }}</h3>
             <label>Knoten 1 </label>
-            <br>
-          <b-form-select
-            v-model="selectedSubNode1"
-            :options="optionsSubNode1"
-            class="mb-3"
-            value-field="node_text"
-            text-field="node_text"
-            disabled-field="notEnabled"
-             >
-          </b-form-select>
+            <br />
+            <b-form-select
+              v-model="selectedSubNode1"
+              :options="optionsSubNode1"
+              class="mb-3"
+              value-field="node_text"
+              text-field="node_text"
+              disabled-field="notEnabled"
+            >
+            </b-form-select>
           </b-col>
           <b-col v-if="selectedLabel1 && selectedLabel2">
             <h3>{{ selectedEdges }}</h3>
             <label>Kante / Verbindung</label>
-            <br>
+            <br />
             <b-form-select
               v-model="selectedEdges"
               :options="relationOptions"
@@ -59,14 +60,14 @@
               value-field="name"
               text-field="name"
               disabled-field="notEnabled"
-              >
+            >
             </b-form-select>
-          <b-input v-model="selectedEdges" type="text"></b-input>
+            <b-input v-model="selectedEdges" type="text"></b-input>
           </b-col>
           <b-col v-if="selectedLabel2">
             <h3>{{ selectedLabel2 }}</h3>
-             <label>Knoten 2</label>
-            <br>
+            <label>Knoten 2</label>
+            <br />
             <b-form-select
               v-model="selectedSubNode2"
               :options="optionsSubNode2"
@@ -74,44 +75,45 @@
               value-field="node_text"
               text-field="node_text"
               disabled-field="notEnabled"
-              >
+            >
             </b-form-select>
           </b-col>
         </b-row>
       </b-container>
-    <b-container>
-      <b-row>
-        <b-col style="text-align:right">
-          <span class="circ1" v-if="showNode1">
-            <span class="text-middle">{{selectedSubNode1}}</span>
-          </span></b-col>
-        <b-col style="text-align:center">
-
-          <span class="text-edge">{{selectedEdges}}</span>
-          <hr v-if="showEdge" class="new5">
+      <b-container>
+        <b-row>
+          <b-col style="text-align: right">
+            <span class="circ1" v-if="showNode1">
+              <span class="text-middle">{{ selectedSubNode1 }}</span>
+            </span></b-col
+          >
+          <b-col style="text-align: center">
+            <span class="text-edge">{{ selectedEdges }}</span>
+            <hr v-if="showEdge" class="new5" />
           </b-col>
-        <b-col style="text-align:left">
-          <span class="circ1" v-if="showNode2">
-            <span class="text-middle">{{selectedSubNode2}}</span>
-          </span>
-        </b-col>
-      </b-row>
-      <br>
-      <br>
-      <br>
-      <b-row >
-        <b-col >
-           <b-button
-           v-if="selectedLabel1 && selectedEdges && selectedLabel2"
-           block
-           variant="primary"
-           @click="saveNodeRelations"
-           >Verbindung speichern</b-button>
-        </b-col>
-      </b-row>
+          <b-col style="text-align: left">
+            <span class="circ1" v-if="showNode2">
+              <span class="text-middle">{{ selectedSubNode2 }}</span>
+            </span>
+          </b-col>
+        </b-row>
+        <br />
+        <br />
+        <br />
+        <b-row>
+          <b-col>
+            <b-button
+              v-if="selectedLabel1 && selectedEdges && selectedLabel2"
+              block
+              variant="primary"
+              @click="saveNodeRelations"
+              >Verbindung speichern</b-button
+            >
+          </b-col>
+        </b-row>
+      </b-container>
     </b-container>
-    </b-container>
-    </div>
+  </div>
 </template>
 <script>
 import axios from 'axios'
@@ -181,7 +183,16 @@ export default {
       // console.log('this.selectedLabel2 => ', this.selectedLabel2)
 
       console.log('nodeConnection Label 2', this.selectedLabel2)
-      const query = 'MATCH (a:' + this.selectedLabel1 + '), (aa:' + this.selectedLabel2 + '), (b:' + this.selectedLabel1 + ')-[r]-(c:' + this.selectedLabel2 + ') RETURN a,aa,b,r,c'
+      const query =
+        'MATCH (a:' +
+        this.selectedLabel1 +
+        '), (aa:' +
+        this.selectedLabel2 +
+        '), (b:' +
+        this.selectedLabel1 +
+        ')-[r]-(c:' +
+        this.selectedLabel2 +
+        ') RETURN a,aa,b,r,c'
       // alert(this.selectedLabel1 + ' ' + this.selectedLabel2)
       console.log('query', query)
 
@@ -218,8 +229,8 @@ export default {
     async saveNodeRelations () {
       if (this.selectedLabel1 === '') return alert('selectedLabel1 ist leer')
       if (this.selectedLabel2 === '') return alert('selectedLabel2 ist leer')
-      if (this.selectedSubNode1 === '') return alert('selectedSubNode1 ist leer')
-      if (this.selectedSubNode2 === '') return alert('selectedSubNode2 ist leer')
+      if (this.selectedSubNode1 === '') { return alert('selectedSubNode1 ist leer') }
+      if (this.selectedSubNode2 === '') { return alert('selectedSubNode2 ist leer') }
       if (this.selectedEdges === '') return alert('selectedEdges ist leer')
 
       try {

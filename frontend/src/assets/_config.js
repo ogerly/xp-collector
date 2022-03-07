@@ -75,14 +75,19 @@ async function graphConfig () {
         initiallyActive: false,
         addNode: function (nodeData, callback) {
           // console.log('addNode')
-          if (document.getElementById('col-label').getAttribute('data-label') === '') {
+          if (
+            document.getElementById('col-label').getAttribute('data-label') ===
+            ''
+          ) {
             Swal.fire('Bitte wähle ein Label!')
             return
           }
           Swal.fire({
             title: 'Neuer Knoten.',
             html:
-              '<label>Label</label><input id="swal-label" class="swal2-input" value="' + document.getElementById('col-label').getAttribute('data-label') + '"><br>' +
+              '<label>Label</label><input id="swal-label" class="swal2-input" value="' +
+              document.getElementById('col-label').getAttribute('data-label') +
+              '"><br>' +
               '<label>Node</label><input id="swal-name" class="swal2-input"><br>' +
               '<label>Info</label><input id="swal-info" class="swal2-input"><br>' +
               '<label>Img</label><input id="swal-img" class="swal2-input">',
@@ -115,8 +120,7 @@ async function graphConfig () {
 
           Swal.fire({
             title: 'Name der Verbindung?',
-            html:
-               '<label>Name</label><input id="swal-title" class="swal2-input"><br>',
+            html: '<label>Name</label><input id="swal-title" class="swal2-input"><br>',
             focusConfirm: false,
             preConfirm: () => {
               try {
@@ -128,7 +132,9 @@ async function graphConfig () {
 
                 // console.log('NeoVis config save New Edge')
                 if (edgeData.from === edgeData.to) {
-                  var r = confirm('Möchten Sie den Knoten mit sich selbst verbinden?')
+                  var r = confirm(
+                    'Möchten Sie den Knoten mit sich selbst verbinden?'
+                  )
                   if (r === true) {
                     callback(edgeData)
                   }
